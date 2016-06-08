@@ -20,10 +20,12 @@ public class MovieDaoImpl implements MovieDao{
     @Autowired
     private String getAllMovies;
 
+    private final MovieRowMapper movieRowMapper = new MovieRowMapper();
+
     public List<Movie> getAll() {
         log.info("Started query to get all movies from database");
         long startTime = System.currentTimeMillis();
-        List<Movie> movieList =  jdbcTemplate.query(getAllMovies, new MovieRowMapper());
+        List<Movie> movieList =  jdbcTemplate.query(getAllMovies, movieRowMapper);
         log.info("Finished query to get all movies from database. It took {} ms", System.currentTimeMillis() - startTime);
         return movieList;
     }

@@ -1,5 +1,7 @@
 package com.voligov.movieland.entity;
 
+import java.util.List;
+
 public class Movie {
 
     private int id;
@@ -9,14 +11,14 @@ public class Movie {
     private String description;
     private double rating;
     private double price;
-    private String genres;
-    private String countries;
+    private List<String> genres;
+    private List<String> countries;
 
-    public String getGenres() {
+    public List<String> getGenres() {
         return genres;
     }
 
-    public void setGenres(String genres) {
+    public void setGenres(List<String> genres) {
         this.genres = genres;
     }
 
@@ -76,11 +78,11 @@ public class Movie {
         this.price = price;
     }
 
-    public String getCountries() {
+    public List<String> getCountries() {
         return countries;
     }
 
-    public void setCountries(String countries) {
+    public void setCountries(List<String> countries) {
         this.countries = countries;
     }
 
