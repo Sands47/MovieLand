@@ -26,7 +26,7 @@ public class MovieController {
     @RequestMapping(produces = "application/json; charset=UTF-8")
     @ResponseBody
     public String getAllMovies() {
-        log.info("Sending request to get list of all movies");
+        log.info("Received request to get list of all movies");
         long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getAll();
         String json = jsonConverter.toJson(movies);
