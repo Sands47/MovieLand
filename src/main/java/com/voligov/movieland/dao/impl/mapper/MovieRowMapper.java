@@ -6,9 +6,10 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MovieRowMapper implements RowMapper<Movie>{
+public class MovieRowMapper implements RowMapper<Movie> {
 
     public Movie mapRow(ResultSet resultSet, int i) throws SQLException {
         Movie movie = new Movie();
@@ -20,19 +21,15 @@ public class MovieRowMapper implements RowMapper<Movie>{
         movie.setRating(resultSet.getDouble("rating"));
         movie.setPrice(resultSet.getDouble("price"));
         String genres = resultSet.getString("genres");
-        List<String> genresList = new ArrayList<String>();
-        String[] genresArray = genres.split(", ");
-        for (String s : genresArray) {
-            genresList.add(s);
+        if (genres != null) {
+            List<String> genresList = new ArrayList<>(Arrays.asList(genres.split(",")));
+            movie.setGenres(genresList);
         }
-        movie.setGenres(genresList);
         String countries = resultSet.getString("countries");
-        List<String> countriesList = new ArrayList<String>();
-        String[] countriesArray = countries.split(", ");
-        for (String s : countriesArray) {
-            countriesList.add(s);
+        if (countries != null) {
+            List<String> countriesList = new ArrayList<>(Arrays.asList(countries.split(",")));
+            movie.setCountries(countriesList);
         }
-        movie.setCountries(countriesList);
         return movie;
     }
 }

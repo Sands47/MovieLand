@@ -12,10 +12,12 @@ class FieldExclusionStrategy implements ExclusionStrategy {
         this.includeFields = includeFields;
     }
 
+    @Override
     public boolean shouldSkipClass(Class<?> clazz) {
         return false;
     }
 
+    @Override
     public boolean shouldSkipField(FieldAttributes attributes) {
         return !includeFields.contains(attributes.getName());
     }

@@ -18,7 +18,7 @@ public class MovieRowMapperTest {
         ResultSet resultSet = mock(ResultSet.class);
         when(resultSet.getInt(any())).thenReturn(1).thenReturn(1999);
         when(resultSet.getString(any())).thenReturn("Джей и Молчаливый Боб Наносят Ответный Удар").
-                thenReturn("Jay and Silent Bob Strike Back").thenReturn("test").thenReturn("Comedy, Action").thenReturn("USA, Country2");
+                thenReturn("Jay and Silent Bob Strike Back").thenReturn("test").thenReturn("Comedy,Action").thenReturn("USA,Country2");
         when(resultSet.getDouble(any())).thenReturn(10.0).thenReturn(19.99);
 
         MovieRowMapper mapper = new MovieRowMapper();
