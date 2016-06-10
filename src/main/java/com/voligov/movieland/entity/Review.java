@@ -3,7 +3,7 @@ package com.voligov.movieland.entity;
 public class Review {
 
     private int id;
-    private int movieId;
+    private Movie movie;
     private User user;
     private String text;
 
@@ -15,12 +15,12 @@ public class Review {
         this.id = id;
     }
 
-    public int getMovieId() {
-        return movieId;
+    public Movie getMovie() {
+        return movie;
     }
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
+    public void setMovie(Movie movie) {
+        this.movie = movie;
     }
 
     public String getText() {
@@ -43,7 +43,7 @@ public class Review {
     public String toString() {
         return "Review{" +
                 "id=" + id +
-                ", movieId=" + movieId +
+                ", movie=" + movie +
                 ", text='" + text + '\'' +
                 ", user=" + user +
                 '}';

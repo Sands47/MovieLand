@@ -59,7 +59,7 @@ public class JsonConverterTest {
         movie.setCountries(countries);
         Review review = new Review();
         review.setId(1);
-        review.setMovieId(1);
+        review.setMovie(movie);
         User user = new User();
         user.setId(1);
         user.setFirstName("Anton");
