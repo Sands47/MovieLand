@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface MovieService {
 
-    List<Movie> getAll();
+    List<Movie> getAll(String ratingOrder, String priceOrder);
 
     Movie getById(int id);
 

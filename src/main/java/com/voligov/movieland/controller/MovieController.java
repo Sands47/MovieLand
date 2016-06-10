@@ -25,8 +25,9 @@ public class MovieController {
 
     @RequestMapping(produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> getAllMovies() {
-        List<Movie> movies = movieService.getAll();
+    public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
+                                               @RequestParam(value = "price", required = false) String priceOrder) {
+        List<Movie> movies = movieService.getAll(ratingOrder, priceOrder);
         if (movies.isEmpty()) {
             return new ResponseEntity<>("Movies not found in database", HttpStatus.BAD_REQUEST);
         }
