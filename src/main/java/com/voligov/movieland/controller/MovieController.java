@@ -12,12 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/v1/movie")
 public class MovieController {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private MovieService movieService;
 
@@ -27,25 +26,22 @@ public class MovieController {
     @RequestMapping(produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> getAllMovies() {
-        log.info("Received request to get list of all movies");
-        long startTime = System.currentTimeMillis();
         List<Movie> movies = movieService.getAll();
+        if (movies.isEmpty()) {
+            return new ResponseEntity<>("Movies not found in database", HttpStatus.BAD_REQUEST);
+        }
         String json = jsonConverter.toJson(movies);
-        log.info("List of movies received. It took {} ms", System.currentTimeMillis() - startTime);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> getMovieById(@PathVariable int movieId) {
-        log.info("Received request to get movie with id = {}", movieId);
-        long startTime = System.currentTimeMillis();
         Movie movie = movieService.getById(movieId);
         if (movie == null) {
             return new ResponseEntity<>("Movie not found in database", HttpStatus.BAD_REQUEST);
         } else {
             String json = jsonConverter.toJson(movie);
-            log.info("Movie received. It took {} ms", System.currentTimeMillis() - startTime);
             return new ResponseEntity<>(json, HttpStatus.OK);
         }
     }
@@ -53,12 +49,15 @@ public class MovieController {
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> searchMovies(@RequestBody String json) {
-        List<Movie> movies = movieService.search(jsonConverter.parseSearchParams(json));
+        Map<String, String> searchParams = jsonConverter.parseSearchParams(json);
+        if (searchParams == null) {
+            return new ResponseEntity<>("Incorrect JSON", HttpStatus.BAD_REQUEST);
+        }
+        List<Movie> movies = movieService.search(searchParams);
         if (movies.isEmpty()) {
             return new ResponseEntity<>("Movies not found in database", HttpStatus.BAD_REQUEST);
-        } else {
-            String jsonResponse = jsonConverter.toJson(movies);
-            return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
         }
+        String jsonResponse = jsonConverter.toJson(movies);
+        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
 }

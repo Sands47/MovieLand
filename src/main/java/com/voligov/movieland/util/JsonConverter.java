@@ -6,7 +6,6 @@ import com.voligov.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,22 +24,23 @@ public class JsonConverter {
     private Gson gsonGetMovieById = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_MOVIE_BY_ID_RESPONSE_FIELDS)).create();
 
     public String toJson(List<Movie> movies) {
-        log.info("Start converting a list of movies to JSON array");
         String json = gsonGetAllMovies.toJson(movies);
-        log.info("Finished converting a list of movies to JSON: {}", json);
         return json;
     }
 
     public String toJson(Movie movie) {
-        log.info("Start converting a movie with Id = {} to JSON", movie.getId());
         String json = gsonGetMovieById.toJson(movie);
-        log.info("Finished converting movie to JSON: {}", json);
         return json;
     }
 
     public Map<String, String> parseSearchParams(String json) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters = gson.fromJson(json, parameters.getClass());
-        return parameters;
+        try {
+            Map<String, String> parameters = new HashMap<>();
+            parameters = gson.fromJson(json, parameters.getClass());
+            return parameters;
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return null;
+        }
     }
 }

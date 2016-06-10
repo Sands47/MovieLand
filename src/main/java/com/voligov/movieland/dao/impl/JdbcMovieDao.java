@@ -1,7 +1,6 @@
 package com.voligov.movieland.dao.impl;
 
 import com.voligov.movieland.dao.MovieDao;
-import com.voligov.movieland.dao.impl.mapper.AllMoviesRowMapper;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.dao.impl.mapper.ReviewRowMapper;
 import com.voligov.movieland.entity.Movie;
@@ -34,6 +33,9 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getReviewsByMovieIdSQL;
 
+    @Autowired
+    private String searchMoviesSQL;
+
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
     private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
 
@@ -41,17 +43,12 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public List<Movie> getAll() {
-        log.info("Started query to get all movies from database");
-        long startTime = System.currentTimeMillis();
         List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
-        log.info("Finished query to get all movies from database. It took {} ms", System.currentTimeMillis() - startTime);
         return movieList;
     }
 
     @Override
     public Movie getById(int id) {
-        log.info("Started query to get movie with id = {} from database", id);
-        long startTime = System.currentTimeMillis();
         Movie movie;
         try {
             movie = jdbcTemplate.queryForObject(getMovieByIdSQL, new Object[]{id}, movieRowMapper);
@@ -70,26 +67,22 @@ public class JdbcMovieDao implements MovieDao {
             reviewList = randomReviews;
         }
         movie.setReviews(reviewList);
-        log.info("Finished query to get movie from database. It took {} ms", System.currentTimeMillis() - startTime);
         return movie;
     }
 
     @Override
     public List<Movie> search(Map<String, String> searchParams) {
-        String genre = searchParams.get("genre");
-        String country = searchParams.get("country");
-        String title = searchParams.get("title");
-        String releaseYear = searchParams.get("release_year");
-        List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
-        List<Movie> searchedList = new ArrayList<>();
-        for (Movie movie : movieList) {
-            if (((genre == null) || movie.getGenres().contains(genre)) &&
-                    ((country == null) || movie.getCountries().contains(country)) &&
-                    ((title == null) || (movie.getName().equals(title) || movie.getNameOriginal().equals(title))) &&
-                    ((releaseYear == null) || movie.getReleaseYear().toString().equals(releaseYear))) {
-                searchedList.add(movie);
-            }
+        String genre = addPercentSigns(searchParams.get("genre"));
+        String country = addPercentSigns(searchParams.get("country"));
+        String title = addPercentSigns(searchParams.get("title"));
+        String releaseYear = addPercentSigns(searchParams.get("release_year"));
+        return jdbcTemplate.query(searchMoviesSQL, new Object[]{title, title, releaseYear, genre, country}, movieRowMapper);
+    }
+
+    private String addPercentSigns(String value) {
+        if (value == null) {
+            return "%";
         }
-        return searchedList;
+        return "%" + value + "%";
     }
 }
