@@ -44,7 +44,7 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
         Movie movie = movieService.getById(movieId);
         if (movie == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Movie not found in database", HttpStatus.BAD_REQUEST);
         } else {
             String json = jsonConverter.toJson(movie);
             log.info("Movie received. It took {} ms", System.currentTimeMillis() - startTime);
