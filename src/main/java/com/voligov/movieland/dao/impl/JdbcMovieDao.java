@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Repository
@@ -33,7 +34,6 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getReviewsByMovieIdSQL;
 
-    private final AllMoviesRowMapper allMoviesRowMapper = new AllMoviesRowMapper();
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
     private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
 
@@ -43,7 +43,7 @@ public class JdbcMovieDao implements MovieDao {
     public List<Movie> getAll() {
         log.info("Started query to get all movies from database");
         long startTime = System.currentTimeMillis();
-        List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, allMoviesRowMapper);
+        List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
         log.info("Finished query to get all movies from database. It took {} ms", System.currentTimeMillis() - startTime);
         return movieList;
     }
@@ -59,7 +59,7 @@ public class JdbcMovieDao implements MovieDao {
             log.info("Movie with id = {} not found in database", id);
             return null;
         }
-        List<Review> reviewList = jdbcTemplate.query(getReviewsByMovieIdSQL,new Object[]{id}, reviewRowMapper);
+        List<Review> reviewList = jdbcTemplate.query(getReviewsByMovieIdSQL, new Object[]{id}, reviewRowMapper);
         if (reviewList.size() > 2) {
             List<Review> randomReviews = new ArrayList<>();
             for (int i = 0; i < 2; i++) {
@@ -72,5 +72,24 @@ public class JdbcMovieDao implements MovieDao {
         movie.setReviews(reviewList);
         log.info("Finished query to get movie from database. It took {} ms", System.currentTimeMillis() - startTime);
         return movie;
+    }
+
+    @Override
+    public List<Movie> search(Map<String, String> searchParams) {
+        String genre = searchParams.get("genre");
+        String country = searchParams.get("country");
+        String title = searchParams.get("title");
+        String releaseYear = searchParams.get("release_year");
+        List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
+        List<Movie> searchedList = new ArrayList<>();
+        for (Movie movie : movieList) {
+            if (((genre == null) || movie.getGenres().contains(genre)) &&
+                    ((country == null) || movie.getCountries().contains(country)) &&
+                    ((title == null) || (movie.getName().equals(title) || movie.getNameOriginal().equals(title))) &&
+                    ((releaseYear == null) || movie.getReleaseYear().toString().equals(releaseYear))) {
+                searchedList.add(movie);
+            }
+        }
+        return searchedList;
     }
 }

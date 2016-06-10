@@ -23,6 +23,11 @@ public class AllMoviesRowMapper implements RowMapper<Movie> {
             List<String> genresList = new ArrayList<>(Arrays.asList(genres.split(",")));
             movie.setGenres(genresList);
         }
+        String countries = resultSet.getString("countries");
+        if (countries != null) {
+            List<String> countriesList = new ArrayList<>(Arrays.asList(countries.split(",")));
+            movie.setCountries(countriesList);
+        }
         return movie;
     }
 }

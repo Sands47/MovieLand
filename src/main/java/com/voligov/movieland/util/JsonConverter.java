@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class JsonConverter {
@@ -18,6 +20,7 @@ public class JsonConverter {
     private static final List<String> GET_MOVIE_BY_ID_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "countries", "genres",
             "description", "reviews", "rating", "user", "firstName", "lastName", "text");
 
+    private Gson gson = new Gson();
     private Gson gsonGetAllMovies = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_ALL_MOVIES_RESPONSE_FIELDS)).create();
     private Gson gsonGetMovieById = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_MOVIE_BY_ID_RESPONSE_FIELDS)).create();
 
@@ -33,5 +36,11 @@ public class JsonConverter {
         String json = gsonGetMovieById.toJson(movie);
         log.info("Finished converting movie to JSON: {}", json);
         return json;
+    }
+
+    public Map<String, String> parseSearchParams(String json) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters = gson.fromJson(json, parameters.getClass());
+        return parameters;
     }
 }

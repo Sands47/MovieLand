@@ -23,10 +23,10 @@ public class MovieRowMapperTest {
 
         MovieRowMapper mapper = new MovieRowMapper();
         Movie movie = mapper.mapRow(resultSet, 0);
-        assertEquals(movie.getId(), 1);
+        assertEquals(movie.getId().intValue(), 1);
         assertEquals(movie.getName(), "Джей и Молчаливый Боб Наносят Ответный Удар");
         assertEquals(movie.getNameOriginal(), "Jay and Silent Bob Strike Back");
-        assertEquals(movie.getReleaseYear(), 1999);
+        assertEquals(movie.getReleaseYear().intValue(), 1999);
         assertEquals(movie.getDescription(), "test");
         assertEquals(movie.getRating(), 10.0, 0.01);
         assertEquals(movie.getGenres(), Arrays.asList("Comedy","Action"));
