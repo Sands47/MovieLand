@@ -1,48 +1,37 @@
 package com.voligov.movieland.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.voligov.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class JsonConverter {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private static final String COMMA_SEPARATOR = ",";
-    private static final String COLON_SEPARATOR = ":";
-    private static final String CURLY_BRACKET_OPEN = "{";
-    private static final String CURLY_BRACKET_CLOSE = "}";
+
+    private static final List<String> GET_ALL_MOVIES_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "rating", "genres");
+    private static final List<String> GET_MOVIE_BY_ID_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "countries", "genres",
+            "description", "reviews", "rating", "user", "firstName", "lastName", "text");
+
+    private Gson gsonGetAllMovies = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_ALL_MOVIES_RESPONSE_FIELDS)).create();
+    private Gson gsonGetMovieById = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_MOVIE_BY_ID_RESPONSE_FIELDS)).create();
 
     public String toJson(List<Movie> movies) {
         log.info("Start converting a list of movies to JSON array");
-        StringBuilder stringBuilder = new StringBuilder(addQuotes("movies"));
-        stringBuilder.append(":[\n");
-        String[] fieldNames = {"name", "name_original", "release_year", "description", "rating", "price", "genres", "countries"};
-        for (Movie movie : movies) {
-            Object[] fields = {movie.getName(), movie.getNameOriginal(), movie.getReleaseYear(), movie.getDescription(),
-                    movie.getRating(), movie.getPrice(), movie.getGenres(), movie.getCountries()};
-            stringBuilder.append(CURLY_BRACKET_OPEN);
-            for (int i = 0; i < fieldNames.length; i++) {
-                stringBuilder.append(addQuotes(fieldNames[i]));
-                stringBuilder.append(COLON_SEPARATOR);
-                stringBuilder.append(addQuotes(fields[i]));
-                if (i != fieldNames.length - 1) {
-                    stringBuilder.append(COMMA_SEPARATOR);
-                }
-            }
-            stringBuilder.append(CURLY_BRACKET_CLOSE);
-            if (!movie.equals(movies.get(movies.size() - 1))) {
-                stringBuilder.append(COMMA_SEPARATOR);
-            }
-            stringBuilder.append("\n");
-        }
-        stringBuilder.append("]");
-        log.info("Finished converting a list of movies to JSON: {}", stringBuilder);
-        return stringBuilder.toString();
+        String json = gsonGetAllMovies.toJson(movies);
+        log.info("Finished converting a list of movies to JSON: {}", json);
+        return json;
     }
 
-    private String addQuotes(Object value) {
-        return "\"" + value + "\"";
+    public String toJson(Movie movie) {
+        log.info("Start converting a movie with Id = {} to JSON", movie.getId());
+        String json = gsonGetMovieById.toJson(movie);
+        log.info("Finished converting movie to JSON: {}", json);
+        return json;
     }
 }

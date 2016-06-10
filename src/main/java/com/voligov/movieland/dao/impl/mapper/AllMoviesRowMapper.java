@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MovieRowMapper implements RowMapper<Movie> {
+public class AllMoviesRowMapper implements RowMapper<Movie> {
 
     public Movie mapRow(ResultSet resultSet, int i) throws SQLException {
         Movie movie = new Movie();
@@ -17,17 +17,11 @@ public class MovieRowMapper implements RowMapper<Movie> {
         movie.setName(resultSet.getString("name"));
         movie.setNameOriginal(resultSet.getString("name_original"));
         movie.setReleaseYear(resultSet.getInt("release_year"));
-        movie.setDescription(resultSet.getString("description"));
         movie.setRating(resultSet.getDouble("rating"));
         String genres = resultSet.getString("genres");
         if (genres != null) {
             List<String> genresList = new ArrayList<>(Arrays.asList(genres.split(",")));
             movie.setGenres(genresList);
-        }
-        String countries = resultSet.getString("countries");
-        if (countries != null) {
-            List<String> countriesList = new ArrayList<>(Arrays.asList(countries.split(",")));
-            movie.setCountries(countriesList);
         }
         return movie;
     }
