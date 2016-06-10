@@ -1,6 +1,7 @@
 package com.voligov.movieland.dao.impl;
 
 import com.voligov.movieland.dao.MovieDao;
+import com.voligov.movieland.dao.impl.mapper.AllMoviesRowMapper;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.dao.impl.mapper.ReviewRowMapper;
 import com.voligov.movieland.entity.Movie;
@@ -8,6 +9,7 @@ import com.voligov.movieland.entity.Review;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +33,7 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getReviewsByMovieIdSQL;
 
+    private final AllMoviesRowMapper allMoviesRowMapper = new AllMoviesRowMapper();
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
     private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
 
@@ -40,7 +43,7 @@ public class JdbcMovieDao implements MovieDao {
     public List<Movie> getAll() {
         log.info("Started query to get all movies from database");
         long startTime = System.currentTimeMillis();
-        List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
+        List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, allMoviesRowMapper);
         log.info("Finished query to get all movies from database. It took {} ms", System.currentTimeMillis() - startTime);
         return movieList;
     }
@@ -49,8 +52,14 @@ public class JdbcMovieDao implements MovieDao {
     public Movie getById(int id) {
         log.info("Started query to get movie with id = {} from database", id);
         long startTime = System.currentTimeMillis();
-        Movie movie = jdbcTemplate.queryForObject(getMovieByIdSQL, new Object[]{id}, movieRowMapper);
-        List<Review> reviewList = jdbcTemplate.query(getReviewsByMovieIdSQL, reviewRowMapper);
+        Movie movie;
+        try {
+            movie = jdbcTemplate.queryForObject(getMovieByIdSQL, new Object[]{id}, movieRowMapper);
+        } catch (EmptyResultDataAccessException e) {
+            log.info("Movie with id = {} not found in database", id);
+            return null;
+        }
+        List<Review> reviewList = jdbcTemplate.query(getReviewsByMovieIdSQL,new Object[]{id}, reviewRowMapper);
         if (reviewList.size() > 2) {
             List<Review> randomReviews = new ArrayList<>();
             for (int i = 0; i < 2; i++) {
@@ -62,6 +71,6 @@ public class JdbcMovieDao implements MovieDao {
         }
         movie.setReviews(reviewList);
         log.info("Finished query to get movie from database. It took {} ms", System.currentTimeMillis() - startTime);
-        return null;
+        return movie;
     }
 }

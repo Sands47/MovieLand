@@ -1,5 +1,6 @@
 package com.voligov.movieland.controller;
 
+import com.voligov.movieland.controller.exception.MovieNotFoundException;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.util.JsonConverter;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/v1")
+@RequestMapping("/v1/movie")
 public class MovieController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -24,7 +25,7 @@ public class MovieController {
     @Autowired
     private JsonConverter jsonConverter;
 
-    @RequestMapping(value = "/movies", produces = "application/json; charset=UTF-8")
+    @RequestMapping(produces = "application/json; charset=UTF-8")
     @ResponseBody
     public String getAllMovies() {
         log.info("Received request to get list of all movies");
@@ -35,14 +36,18 @@ public class MovieController {
         return json;
     }
 
-    @RequestMapping(value = "/movie/{movieId}", produces = "application/json; charset=UTF-8")
+    @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public String getMovieById(@PathVariable int movieId) {
         log.info("Received request to get movie with id = {}", movieId);
         long startTime = System.currentTimeMillis();
         Movie movie = movieService.getById(movieId);
-        String json = jsonConverter.toJson(movie);
-        log.info("Movie received. It took {} ms", System.currentTimeMillis() - startTime);
-        return json;
+        if (movie == null) {
+            throw new MovieNotFoundException();
+        } else {
+            String json = jsonConverter.toJson(movie);
+            log.info("Movie received. It took {} ms", System.currentTimeMillis() - startTime);
+            return json;
+        }
     }
 }
