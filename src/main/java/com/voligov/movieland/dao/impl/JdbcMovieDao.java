@@ -11,11 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
@@ -33,13 +30,8 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getReviewsByMovieIdSQL;
 
-    @Autowired
-    private String searchMoviesSQL;
-
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
     private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
-
-    private Random random = new Random();
 
     @Override
     public List<Movie> getAll() {
@@ -57,32 +49,29 @@ public class JdbcMovieDao implements MovieDao {
             return null;
         }
         List<Review> reviewList = jdbcTemplate.query(getReviewsByMovieIdSQL, new Object[]{id}, reviewRowMapper);
-        if (reviewList.size() > 2) {
-            List<Review> randomReviews = new ArrayList<>();
-            for (int i = 0; i < 2; i++) {
-                int index = random.nextInt(reviewList.size());
-                randomReviews.add(reviewList.get(index));
-                reviewList.remove(index);
-            }
-            reviewList = randomReviews;
-        }
         movie.setReviews(reviewList);
         return movie;
     }
 
     @Override
     public List<Movie> search(Map<String, String> searchParams) {
-        String genre = addPercentSigns(searchParams.get("genre"));
-        String country = addPercentSigns(searchParams.get("country"));
-        String title = addPercentSigns(searchParams.get("title"));
-        String releaseYear = addPercentSigns(searchParams.get("release_year"));
-        return jdbcTemplate.query(searchMoviesSQL, new Object[]{title, title, releaseYear, genre, country}, movieRowMapper);
+        StringBuilder builder = new StringBuilder(getAllMoviesSQL);
+        if (!searchParams.isEmpty()) {
+            builder.append("WHERE ");
+            builder.append(addQueryCondition("genres", searchParams.get("genre")));
+            builder.append(addQueryCondition("countries", searchParams.get("country")));
+            builder.append(addQueryCondition("name", searchParams.get("title")));
+            builder.append(addQueryCondition("name_original", searchParams.get("title_original")));
+            builder.append(addQueryCondition("release_year", searchParams.get("release_year")));
+            builder.delete(builder.length() - 5, builder.length());
+        }
+        return jdbcTemplate.query(builder.toString(), movieRowMapper);
     }
 
-    private String addPercentSigns(String value) {
+    private String addQueryCondition(String field, String value) {
         if (value == null) {
-            return "%";
+            return "";
         }
-        return "%" + value + "%";
+        return field + " LIKE '%" + value + "%' AND ";
     }
 }

@@ -6,6 +6,7 @@ import com.voligov.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,8 @@ public class JsonConverter {
     private static final List<String> GET_ALL_MOVIES_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "rating", "genres");
     private static final List<String> GET_MOVIE_BY_ID_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "countries", "genres",
             "description", "reviews", "rating", "user", "firstName", "lastName", "text");
+
+    private static final List<String> MOVIE_SEARCH_PARAMETERS = Arrays.asList("title", "title_original", "release_year", "country", "genre");
 
     private Gson gson = new Gson();
     private Gson gsonGetAllMovies = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_ALL_MOVIES_RESPONSE_FIELDS)).create();
@@ -37,6 +40,11 @@ public class JsonConverter {
         try {
             Map<String, String> parameters = new HashMap<>();
             parameters = gson.fromJson(json, parameters.getClass());
+            for (String param : parameters.keySet()) {
+                if (!MOVIE_SEARCH_PARAMETERS.contains(param)) {
+                    parameters.remove(param);
+                }
+            }
             return parameters;
         } catch (Exception e) {
             log.warn(e.getMessage());
