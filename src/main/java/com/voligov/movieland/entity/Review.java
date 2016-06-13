@@ -2,16 +2,16 @@ package com.voligov.movieland.entity;
 
 public class Review {
 
-    private int id;
+    private Integer id;
     private Movie movie;
     private User user;
     private String text;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

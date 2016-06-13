@@ -5,18 +5,25 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="getAllMoviesSQL" class="java.lang.String">
-        <constructor-arg value="SELECT t1.id, t1.name, t1.name_original, t1.release_year, t1.rating,
-        GROUP_CONCAT(DISTINCT t3.name ORDER BY t3.id DESC SEPARATOR ',') genres
+        <constructor-arg value="SELECT *
+        FROM (SELECT t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price,
+        GROUP_CONCAT(DISTINCT t3.name ORDER BY t3.id DESC SEPARATOR ',') genres,
+        GROUP_CONCAT(DISTINCT t5.name ORDER BY t5.name DESC SEPARATOR ', ') countries
         FROM movie t1
         LEFT JOIN movie_genre t2
         ON t1.id = t2.movie_id
         LEFT JOIN genre t3
         ON t2.genre_id = t3.id
-        GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.rating;"/>
+        LEFT JOIN movie_country t4
+        on t1.id = t4.movie_id
+        LEFT JOIN country t5
+        on t4.country_id = t5.id
+        GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price) t
+        "/>
     </bean>
 
     <bean id="getMovieByIdSQL" class="java.lang.String">
-        <constructor-arg value="SELECT t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating,
+        <constructor-arg value="SELECT t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price,
         GROUP_CONCAT(DISTINCT t3.name ORDER BY t3.id DESC SEPARATOR ',') genres,
         GROUP_CONCAT(DISTINCT t5.name ORDER BY t5.name DESC SEPARATOR ', ') countries
         FROM movie t1
@@ -29,7 +36,7 @@
         LEFT JOIN country t5
         on t4.country_id = t5.id
         WHERE t1.id = ?
-        GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating;"/>
+        GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price;"/>
     </bean>
 
     <bean id="getReviewsByMovieIdSQL" class="java.lang.String">

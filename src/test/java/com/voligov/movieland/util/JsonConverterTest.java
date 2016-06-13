@@ -1,23 +1,32 @@
 package com.voligov.movieland.util;
 
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.MovieSearchParams;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.entity.User;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
 public class JsonConverterTest {
+    private static JsonConverter jsonConverter;
+
+    @BeforeClass
+    public static void setUp() {
+        jsonConverter = new JsonConverter();
+    }
+
     @Test
     public void testMovieListToJson() {
         String expectedJson = "[{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\",\"nameOriginal\":\"Jay and Silent Bob Strike Back\"," +
                 "\"releaseYear\":1999,\"rating\":10.0,\"genres\":[\"Comedy\",\"Action\"]},{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\"," +
                 "\"nameOriginal\":\"Jay and Silent Bob Strike Back\",\"releaseYear\":1999,\"rating\":10.0,\"genres\":[\"Comedy\",\"Action\"]}]";
-        JsonConverter jsonConverter = new JsonConverter();
         Movie movie = new Movie();
         movie.setId(1);
         movie.setName("Джей и Молчаливый Боб Наносят Ответный Удар");
@@ -44,7 +53,6 @@ public class JsonConverterTest {
                 "\"releaseYear\":1999,\"description\":\"description\",\"rating\":10.0,\"genres\":[\"Comedy\",\"Action\"],\"countries\":[\"USA\"," +
                 "\"country2\",\"country3\"],\"reviews\":[{\"user\":{\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"}," +
                 "{\"user\":{\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"}]}";
-        JsonConverter jsonConverter = new JsonConverter();
         Movie movie = new Movie();
         movie.setId(1);
         movie.setName("Джей и Молчаливый Боб Наносят Ответный Удар");
@@ -71,5 +79,16 @@ public class JsonConverterTest {
 
         String actualJson = jsonConverter.toJson(movie);
         assertEquals(expectedJson, actualJson);
+    }
+
+    @Test
+    public void testParseSearchParams() {
+        String json = "{\"genre\": \"комедия\", \"country\": \"США\", \"title\": \"Test\", \"titleOriginal\": \"Test\", \"releaseYear\": \"1999\"}";
+        MovieSearchParams params = jsonConverter.parseSearchParams(json);
+        assertEquals(params.getGenre(), "комедия");
+        assertEquals(params.getCountry(), "США");
+        assertEquals(params.getTitle(), "Test");
+        assertEquals(params.getTitleOriginal(), "Test");
+        assertEquals(params.getReleaseYear(), "1999");
     }
 }

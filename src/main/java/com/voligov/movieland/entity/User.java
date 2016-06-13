@@ -2,17 +2,17 @@ package com.voligov.movieland.entity;
 
 
 public class User {
-    private int id;
+    private Integer id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

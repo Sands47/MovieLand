@@ -4,13 +4,13 @@ import java.util.List;
 
 public class Movie {
 
-    private int id;
+    private Integer id;
     private String name;
     private String nameOriginal;
-    private int releaseYear;
+    private Integer releaseYear;
     private String description;
-    private double rating;
-    private double price;
+    private Double rating;
+    private Double price;
     private List<String> genres;
     private List<String> countries;
     private List<Review> reviews;
@@ -23,11 +23,11 @@ public class Movie {
         this.genres = genres;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -47,11 +47,11 @@ public class Movie {
         this.nameOriginal = nameOriginal;
     }
 
-    public int getReleaseYear() {
+    public Integer getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(int releaseYear) {
+    public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
     }
 
@@ -63,19 +63,19 @@ public class Movie {
         this.description = description;
     }
 
-    public double getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

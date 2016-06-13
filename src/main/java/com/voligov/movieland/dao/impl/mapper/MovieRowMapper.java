@@ -19,6 +19,7 @@ public class MovieRowMapper implements RowMapper<Movie> {
         movie.setReleaseYear(resultSet.getInt("release_year"));
         movie.setDescription(resultSet.getString("description"));
         movie.setRating(resultSet.getDouble("rating"));
+        movie.setPrice(resultSet.getDouble("price"));
         String genres = resultSet.getString("genres");
         if (genres != null) {
             List<String> genresList = new ArrayList<>(Arrays.asList(genres.split(",")));

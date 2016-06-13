@@ -1,21 +1,17 @@
 package com.voligov.movieland.dao.impl;
 
 import com.voligov.movieland.dao.MovieDao;
-import com.voligov.movieland.dao.impl.mapper.AllMoviesRowMapper;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
-import com.voligov.movieland.dao.impl.mapper.ReviewRowMapper;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.Review;
+import com.voligov.movieland.entity.MovieSearchParams;
+import com.voligov.movieland.util.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
@@ -30,47 +26,29 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getMovieByIdSQL;
 
-    @Autowired
-    private String getReviewsByMovieIdSQL;
+    private final QueryBuilder queryBuilder = new QueryBuilder();
 
-    private final AllMoviesRowMapper allMoviesRowMapper = new AllMoviesRowMapper();
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
-    private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
-
-    private Random random = new Random();
 
     @Override
     public List<Movie> getAll() {
-        log.info("Started query to get all movies from database");
-        long startTime = System.currentTimeMillis();
-        List<Movie> movieList = jdbcTemplate.query(getAllMoviesSQL, allMoviesRowMapper);
-        log.info("Finished query to get all movies from database. It took {} ms", System.currentTimeMillis() - startTime);
-        return movieList;
+        return jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
     }
 
     @Override
     public Movie getById(int id) {
-        log.info("Started query to get movie with id = {} from database", id);
-        long startTime = System.currentTimeMillis();
         Movie movie;
         try {
             movie = jdbcTemplate.queryForObject(getMovieByIdSQL, new Object[]{id}, movieRowMapper);
         } catch (EmptyResultDataAccessException e) {
-            log.info("Movie with id = {} not found in database", id);
+            log.warn("Movie with id = {} not found in database", id);
             return null;
         }
-        List<Review> reviewList = jdbcTemplate.query(getReviewsByMovieIdSQL,new Object[]{id}, reviewRowMapper);
-        if (reviewList.size() > 2) {
-            List<Review> randomReviews = new ArrayList<>();
-            for (int i = 0; i < 2; i++) {
-                int index = random.nextInt(reviewList.size());
-                randomReviews.add(reviewList.get(index));
-                reviewList.remove(index);
-            }
-            reviewList = randomReviews;
-        }
-        movie.setReviews(reviewList);
-        log.info("Finished query to get movie from database. It took {} ms", System.currentTimeMillis() - startTime);
         return movie;
+    }
+
+    @Override
+    public List<Movie> search(MovieSearchParams searchParams) {
+        return jdbcTemplate.query(queryBuilder.buildSearchQuery(searchParams, getAllMoviesSQL), movieRowMapper);
     }
 }
