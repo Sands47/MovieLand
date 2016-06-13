@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.entity.MovieSearchParams;
+import com.voligov.movieland.entity.UserCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,15 @@ public class JsonConverter {
     public MovieSearchParams parseSearchParams(String json) {
         try {
             return gson.fromJson(json, MovieSearchParams.class);
+        } catch (Exception e) {
+            log.warn("Error parsing JSON: {} ", e);
+            throw e;
+        }
+    }
+
+    public UserCredentials parseUserCredentials(String json) {
+        try {
+            return gson.fromJson(json, UserCredentials.class);
         } catch (Exception e) {
             log.warn("Error parsing JSON: {} ", e);
             throw e;

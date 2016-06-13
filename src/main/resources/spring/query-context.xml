@@ -46,4 +46,10 @@
         on t1.user_id = t2.id
         WHERE t1.movie_id = ?;"/>
     </bean>
+
+    <bean id="getUserByEmailSQL" class="java.lang.String">
+        <constructor-arg value="SELECT id, first_name, last_name, email, password
+        FROM user
+        WHERE email = ?;"/>
+    </bean>
 </beans>
