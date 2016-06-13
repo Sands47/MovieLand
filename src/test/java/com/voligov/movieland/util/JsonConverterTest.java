@@ -1,6 +1,7 @@
 package com.voligov.movieland.util;
 
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.MovieSearchParams;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.entity.User;
 import org.junit.BeforeClass;
@@ -82,11 +83,12 @@ public class JsonConverterTest {
 
     @Test
     public void testParseSearchParams() {
-        String json = "{\"genre\": \"комедия\", \"country\": \"США\", \"title\": \"Test\", \"release_year\": \"1999\"}";
-        Map<String, String> params = jsonConverter.parseSearchParams(json);
-        assertEquals(params.get("genre"), "комедия");
-        assertEquals(params.get("country"), "США");
-        assertEquals(params.get("title"), "Test");
-        assertEquals(params.get("release_year"), "1999");
+        String json = "{\"genre\": \"комедия\", \"country\": \"США\", \"title\": \"Test\", \"titleOriginal\": \"Test\", \"releaseYear\": \"1999\"}";
+        MovieSearchParams params = jsonConverter.parseSearchParams(json);
+        assertEquals(params.getGenre(), "комедия");
+        assertEquals(params.getCountry(), "США");
+        assertEquals(params.getTitle(), "Test");
+        assertEquals(params.getTitleOriginal(), "Test");
+        assertEquals(params.getReleaseYear(), "1999");
     }
 }

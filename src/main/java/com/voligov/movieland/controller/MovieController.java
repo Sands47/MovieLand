@@ -1,10 +1,9 @@
 package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.util.JsonConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/v1/movie")
@@ -50,10 +48,7 @@ public class MovieController {
     @RequestMapping(value = "/search", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> searchMovies(@RequestBody String json) {
-        Map<String, String> searchParams = jsonConverter.parseSearchParams(json);
-        if (searchParams == null) {
-            return new ResponseEntity<>("Incorrect JSON", HttpStatus.BAD_REQUEST);
-        }
+        MovieSearchParams searchParams = jsonConverter.parseSearchParams(json);
         List<Movie> movies = movieService.search(searchParams);
         if (movies.isEmpty()) {
             return new ResponseEntity<>("Movies not found in database", HttpStatus.BAD_REQUEST);

@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
-public class MovieControllerLogging {
+public class ControllerLogging {
     private final Logger log = LoggerFactory.getLogger(MovieController.class);
 
-    @Around("execution(* com.voligov.movieland.controller.MovieController.*(..))")
+    @Around("execution(* com.voligov.movieland.controller.*.*(..))")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("Received request to {}", joinPoint.getSignature().getName());
         long startTime = System.currentTimeMillis();

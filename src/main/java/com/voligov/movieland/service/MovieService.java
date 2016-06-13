@@ -1,9 +1,8 @@
 package com.voligov.movieland.service;
 
 import com.voligov.movieland.entity.Movie;
-
+import com.voligov.movieland.entity.MovieSearchParams;
 import java.util.List;
-import java.util.Map;
 
 public interface MovieService {
 
@@ -11,5 +10,5 @@ public interface MovieService {
 
     Movie getById(int id);
 
-    List<Movie> search(Map<String, String> searchParams);
+    List<Movie> search(MovieSearchParams searchParams);
 }
