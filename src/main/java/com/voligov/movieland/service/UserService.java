@@ -10,4 +10,6 @@ public interface UserService {
     boolean validateUser(UserCredentials credentials, User user);
 
     UserToken generateToken(User user);
+
+    boolean validateToken(String token);
 }

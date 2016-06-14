@@ -52,4 +52,19 @@
         FROM user
         WHERE email = ?;"/>
     </bean>
+
+    <bean id="addReviewSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO review(movie_id, user_id, text)
+        VALUES (?, ?, ?);"/>
+    </bean>
+
+    <bean id="deleteReviewSQL" class="java.lang.String">
+        <constructor-arg value="DELETE FROM review
+        WHERE movie_id = ? AND user_id = ?;"/>
+    </bean>
+
+    <bean id="getReviewSQL" class="java.lang.String">
+        <constructor-arg value="SELECT COUNT(*) FROM review
+        WHERE movie_id = ? AND user_id = ?;"/>
+    </bean>
 </beans>

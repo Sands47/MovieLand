@@ -6,7 +6,7 @@ import java.util.UUID;
 public class UserToken {
     private User user;
     private UUID token;
-    private Date creationDate;
+    private Date expirationDate;
 
     public User getUser() {
         return user;
@@ -24,12 +24,21 @@ public class UserToken {
         this.token = token;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof UserToken)) {
+            return false;
+        }
+        UserToken token = (UserToken) obj;
+        return user.equals(token.getUser());
     }
 
     @Override
@@ -37,7 +46,7 @@ public class UserToken {
         return "UserToken{" +
                 "user=" + user +
                 ", token=" + token +
-                ", creationDate=" + creationDate +
+                ", expirationDate=" + expirationDate +
                 '}';
     }
 }

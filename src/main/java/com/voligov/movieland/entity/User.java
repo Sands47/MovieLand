@@ -60,6 +60,15 @@ public class User {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        User user = (User) obj;
+        return id.equals(user.getId()) && firstName.equals(user.getFirstName()) && lastName.equals(user.getLastName());
+    }
+
+    @Override
     public String toString() {
         return "User{" +
                 "id=" + id +

@@ -1,9 +1,6 @@
 package com.voligov.movieland.util;
 
-import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.MovieSearchParams;
-import com.voligov.movieland.entity.Review;
-import com.voligov.movieland.entity.User;
+import com.voligov.movieland.entity.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -90,5 +87,22 @@ public class JsonConverterTest {
         assertEquals(params.getTitle(), "Test");
         assertEquals(params.getTitleOriginal(), "Test");
         assertEquals(params.getReleaseYear(), "1999");
+    }
+
+    @Test
+    public void testParseUserCredentials() {
+        String json = "{\"login\": \"user@email.com\", \"password\": \"pwd\"}";
+        UserCredentials userCredentials = jsonConverter.parseUserCredentials(json);
+        assertEquals(userCredentials.getLogin(), "user@email.com");
+        assertEquals(userCredentials.getPassword(), "pwd");
+    }
+
+    @Test
+    public void testParseReview() {
+        String json = "{\"movie_id\": \"1\", \"user_id\": \"2\", \"text\": \"Test review\"}";
+        Review review = jsonConverter.parseReview(json);
+        assertEquals(review.getMovie().getId().toString(), "1");
+        assertEquals(review.getUser().getId().toString(), "2");
+        assertEquals(review.getText(), "Test review");
     }
 }

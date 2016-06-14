@@ -5,7 +5,6 @@ import com.voligov.movieland.entity.UserCredentials;
 import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.UserService;
 import com.voligov.movieland.util.JsonConverter;
-import com.voligov.movieland.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> searchMovies(@RequestBody String json) {
+    public ResponseEntity<String> authorizeUser(@RequestBody String json) {
         UserCredentials credentials = jsonConverter.parseUserCredentials(json);
         if (credentials.isInvalid()) {
             return new ResponseEntity<>("User credentials received are incomplete", HttpStatus.BAD_REQUEST);
