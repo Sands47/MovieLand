@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -18,7 +19,7 @@ public class MovieRowMapperTest {
         ResultSet resultSet = mock(ResultSet.class);
         when(resultSet.getInt(any())).thenReturn(1).thenReturn(1999);
         when(resultSet.getString(any())).thenReturn("Джей и Молчаливый Боб Наносят Ответный Удар").
-                thenReturn("Jay and Silent Bob Strike Back").thenReturn("test").thenReturn("Comedy,Action").thenReturn("USA,Country2");
+                thenReturn("Jay and Silent Bob Strike Back").thenReturn("test").thenReturn("1,2").thenReturn("USA,Country2");
         when(resultSet.getDouble(any())).thenReturn(10.0).thenReturn(20.0);
 
         MovieRowMapper mapper = new MovieRowMapper();
@@ -30,7 +31,7 @@ public class MovieRowMapperTest {
         assertEquals(movie.getDescription(), "test");
         assertEquals(movie.getRating(), 10.0, 0.01);
         assertEquals(movie.getPrice(), 20, 0.01);
-        assertEquals(movie.getGenres(), Arrays.asList("Comedy","Action"));
-        assertEquals(movie.getCountries(), Arrays.asList("USA","Country2"));
+        assertEquals(movie.getGenreIds(), "1,2");
+        assertEquals(movie.getCountries(), Arrays.asList("USA", "Country2"));
     }
 }

@@ -11,15 +11,16 @@ public class Movie {
     private String description;
     private Double rating;
     private Double price;
-    private List<String> genres;
+    private String genreIds;
+    private List<Genre> genres;
     private List<String> countries;
     private List<Review> reviews;
 
-    public List<String> getGenres() {
+    public List<Genre> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<String> genres) {
+    public void setGenres(List<Genre> genres) {
         this.genres = genres;
     }
 
@@ -93,6 +94,14 @@ public class Movie {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(String genreIds) {
+        this.genreIds = genreIds;
     }
 
     @Override

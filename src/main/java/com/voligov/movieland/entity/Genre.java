@@ -21,6 +21,15 @@ public class Genre {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Genre)) {
+            return false;
+        }
+        Genre genre = (Genre) obj;
+        return genre.getId().equals(id) && genre.getName().equals(name);
+    }
+
+    @Override
     public String toString() {
         return "Genre{" +
                 "id=" + id +

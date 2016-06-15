@@ -20,11 +20,7 @@ public class MovieRowMapper implements RowMapper<Movie> {
         movie.setDescription(resultSet.getString("description"));
         movie.setRating(resultSet.getDouble("rating"));
         movie.setPrice(resultSet.getDouble("price"));
-        String genres = resultSet.getString("genres");
-        if (genres != null) {
-            List<String> genresList = new ArrayList<>(Arrays.asList(genres.split(",")));
-            movie.setGenres(genresList);
-        }
+        movie.setGenreIds(resultSet.getString("genres"));
         String countries = resultSet.getString("countries");
         if (countries != null) {
             List<String> countriesList = new ArrayList<>(Arrays.asList(countries.split(",")));

@@ -22,8 +22,8 @@ public class JsonConverterTest {
     @Test
     public void testMovieListToJson() {
         String expectedJson = "[{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\",\"nameOriginal\":\"Jay and Silent Bob Strike Back\"," +
-                "\"releaseYear\":1999,\"rating\":10.0,\"genres\":[\"Comedy\",\"Action\"]},{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\"," +
-                "\"nameOriginal\":\"Jay and Silent Bob Strike Back\",\"releaseYear\":1999,\"rating\":10.0,\"genres\":[\"Comedy\",\"Action\"]}]";
+                "\"releaseYear\":1999,\"rating\":10.0,\"genres\":[{\"name\":\"Comedy\"},{\"name\":\"Action\"}]},{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\"," +
+                "\"nameOriginal\":\"Jay and Silent Bob Strike Back\",\"releaseYear\":1999,\"rating\":10.0,\"genres\":[{\"name\":\"Comedy\"},{\"name\":\"Action\"}]}]";
         Movie movie = new Movie();
         movie.setId(1);
         movie.setName("Джей и Молчаливый Боб Наносят Ответный Удар");
@@ -32,7 +32,13 @@ public class JsonConverterTest {
         movie.setDescription("description");
         movie.setRating(10.0);
         movie.setPrice(20.0);
-        List<String> genres = Arrays.asList("Comedy", "Action");
+        List<Genre> genres = new ArrayList<>();
+        Genre genre = new Genre();
+        genre.setName("Comedy");
+        genres.add(genre);
+        genre = new Genre();
+        genre.setName("Action");
+        genres.add(genre);
         movie.setGenres(genres);
         List<String> countries = Arrays.asList("USA", "country2", "country3");
         movie.setCountries(countries);
@@ -47,7 +53,7 @@ public class JsonConverterTest {
     @Test
     public void testMovieToJson() {
         String expectedJson = "{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\",\"nameOriginal\":\"Jay and Silent Bob Strike Back\"," +
-                "\"releaseYear\":1999,\"description\":\"description\",\"rating\":10.0,\"genres\":[\"Comedy\",\"Action\"],\"countries\":[\"USA\"," +
+                "\"releaseYear\":1999,\"description\":\"description\",\"rating\":10.0,\"genres\":[{\"name\":\"Comedy\"},{\"name\":\"Action\"}],\"countries\":[\"USA\"," +
                 "\"country2\",\"country3\"],\"reviews\":[{\"user\":{\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"}," +
                 "{\"user\":{\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"}]}";
         Movie movie = new Movie();
@@ -58,7 +64,13 @@ public class JsonConverterTest {
         movie.setDescription("description");
         movie.setRating(10.0);
         movie.setPrice(20.0);
-        List<String> genres = Arrays.asList("Comedy", "Action");
+        List<Genre> genres = new ArrayList<>();
+        Genre genre = new Genre();
+        genre.setName("Comedy");
+        genres.add(genre);
+        genre = new Genre();
+        genre.setName("Action");
+        genres.add(genre);
         movie.setGenres(genres);
         List<String> countries = Arrays.asList("USA", "country2", "country3");
         movie.setCountries(countries);
