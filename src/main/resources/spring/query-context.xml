@@ -67,4 +67,9 @@
         <constructor-arg value="SELECT COUNT(*) FROM review
         WHERE movie_id = ? AND user_id = ?;"/>
     </bean>
+
+    <bean id="getGenresSQL" class="java.lang.String">
+        <constructor-arg value="SELECT id, name
+        FROM genre;"/>
+    </bean>
 </beans>

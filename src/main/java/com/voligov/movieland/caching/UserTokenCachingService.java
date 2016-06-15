@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class UserTokenCache {
+public class UserTokenCachingService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private List<UserToken> tokenCache = new ArrayList<>();

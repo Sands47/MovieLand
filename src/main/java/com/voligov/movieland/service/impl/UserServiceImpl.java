@@ -1,6 +1,6 @@
 package com.voligov.movieland.service.impl;
 
-import com.voligov.movieland.caching.UserTokenCache;
+import com.voligov.movieland.caching.UserTokenCachingService;
 import com.voligov.movieland.dao.UserDao;
 import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserCredentials;
@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private UserUtils userUtils;
 
     @Autowired
-    private UserTokenCache userTokenCache;
+    private UserTokenCachingService userTokenCachingService;
 
     @Override
     public User getUser(UserCredentials credentials) {
@@ -39,13 +39,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean validateToken(String token) {
-        return (userTokenCache.getByTokenString(token) != null);
+        return (userTokenCachingService.getByTokenString(token) != null);
     }
 
     @Override
     public UserToken generateToken(User user) {
         UserToken token = userUtils.generateToken(user);
-        token = userTokenCache.addToCache(token);
+        token = userTokenCachingService.addToCache(token);
         return token;
     }
 }
