@@ -38,8 +38,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean validateToken(String token) {
-        return (userTokenCachingService.getByTokenString(token) != null);
+    public boolean validateToken(String token, User user) {
+        UserToken userToken = userTokenCachingService.getByTokenString(token);
+        return (userToken != null) && (user.getId().equals(userToken.getUser().getId()));
     }
 
     @Override

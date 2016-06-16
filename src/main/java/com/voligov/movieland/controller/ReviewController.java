@@ -2,6 +2,7 @@ package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.service.ReviewService;
+import com.voligov.movieland.service.UserService;
 import com.voligov.movieland.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,18 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private JsonConverter jsonConverter;
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> addReview(@RequestHeader("token") String token, @RequestBody String json) {
         Review review = jsonConverter.parseReview(json);
+        if (!userService.validateToken(token, review.getUser())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         if (reviewService.add(review, token)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -33,6 +40,9 @@ public class ReviewController {
     @ResponseBody
     public ResponseEntity<String> deleteReview(@RequestHeader("token") String token, @RequestBody String json) {
         Review review = jsonConverter.parseReview(json);
+        if (!userService.validateToken(token, review.getUser())) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         if (reviewService.delete(review, token)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

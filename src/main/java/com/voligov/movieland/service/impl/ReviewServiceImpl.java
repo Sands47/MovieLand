@@ -15,9 +15,6 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private ReviewDao reviewDao;
 
-    @Autowired
-    private UserService userService;
-
     @Override
     public List<Review> getByMovieId(int movieId) {
         return reviewDao.getByMovieId(movieId);
@@ -25,17 +22,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public boolean add(Review review, String token) {
-        if (userService.validateToken(token)) {
-            return reviewDao.add(review);
-        }
-        return false;
+        return reviewDao.add(review);
     }
 
     @Override
     public boolean delete(Review review, String token) {
-        if (userService.validateToken(token)) {
-            return reviewDao.delete(review);
-        }
-        return false;
+        return reviewDao.delete(review);
     }
 }

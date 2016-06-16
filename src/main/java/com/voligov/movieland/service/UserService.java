@@ -11,5 +11,5 @@ public interface UserService {
 
     UserToken generateToken(User user);
 
-    boolean validateToken(String token);
+    boolean validateToken(String token, User user);
 }

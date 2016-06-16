@@ -25,7 +25,7 @@ public class GenreCachingService {
                 return genre;
             }
         }
-        log.warn("Genre with if = {} not found in cache", id);
+        log.warn("Genre with id = {} not found in cache", id);
         return null;
     }
 
