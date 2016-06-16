@@ -1,12 +1,10 @@
 package com.voligov.movieland.service.impl;
 
-import com.voligov.movieland.caching.UserTokenCachingService;
 import com.voligov.movieland.dao.UserDao;
 import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserCredentials;
-import com.voligov.movieland.entity.UserToken;
+import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.service.UserService;
-import com.voligov.movieland.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,36 +15,22 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Autowired
-    private UserUtils userUtils;
-
-    @Autowired
-    private UserTokenCachingService userTokenCachingService;
+    private SecurityService securityService;
 
     @Override
     public User getUser(UserCredentials credentials) {
-        User user = userDao.getUserByEmail(credentials);
-        return user;
+        return userDao.getUserByEmail(credentials);
     }
 
     @Override
-    public boolean validateUser(UserCredentials credentials, User user) {
-        if (user.getEmail().equals(credentials.getLogin()) &&
-                user.getPassword().equals(credentials.getPassword())) {
-            return true;
+    public String authoriseUser(UserCredentials credentials) {
+        if (credentials.isInvalid()) {
+            throw new SecurityException("User credentials are invalid");
         }
-        return false;
-    }
-
-    @Override
-    public boolean validateToken(String token, User user) {
-        UserToken userToken = userTokenCachingService.getByTokenString(token);
-        return (userToken != null) && (user.getId().equals(userToken.getUser().getId()));
-    }
-
-    @Override
-    public UserToken generateToken(User user) {
-        UserToken token = userUtils.generateToken(user);
-        token = userTokenCachingService.addToCache(token);
-        return token;
+        User user = getUser(credentials);
+        if (user == null || !securityService.validateUser(credentials, user)) {
+            throw new SecurityException("Login or password are invalid");
+        }
+        return securityService.registerUser(user).getToken();
     }
 }

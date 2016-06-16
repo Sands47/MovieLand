@@ -1,12 +1,13 @@
 package com.voligov.movieland.caching;
 
-import com.voligov.movieland.dao.GenreDao;
 import com.voligov.movieland.entity.Genre;
+import com.voligov.movieland.service.GenreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -17,7 +18,7 @@ public class GenreCachingService {
     private List<Genre> genreCache = new CopyOnWriteArrayList<>();
 
     @Autowired
-    private GenreDao genreDao;
+    private GenreService genreService;
 
     public Genre getById(int id) {
         for (Genre genre : genreCache) {
@@ -31,7 +32,7 @@ public class GenreCachingService {
 
     @Scheduled(fixedRate = 4 * 60 * 60 * 1000)
     public void updateGenreCache() {
-        List<Genre> genresFromDb = genreDao.getAll();
+        List<Genre> genresFromDb = genreService.getAll();
         if (genreCache.isEmpty()) {
             genreCache.addAll(genresFromDb);
         } else {

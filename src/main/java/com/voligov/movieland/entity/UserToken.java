@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class UserToken {
     private User user;
-    private UUID token;
+    private String token;
     private Date expirationDate;
 
     public User getUser() {
@@ -16,11 +16,11 @@ public class UserToken {
         this.user = user;
     }
 
-    public UUID getToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setToken(UUID token) {
+    public void setToken(String token) {
         this.token = token;
     }
 
