@@ -1,12 +1,15 @@
 package com.voligov.movieland.entity;
 
 
+import java.util.UUID;
+
 public class User {
     private Integer id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private UUID token;
 
     public Integer getId() {
         return id;
@@ -46,6 +49,23 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UUID getToken() {
+        return token;
+    }
+
+    public void setToken(UUID token) {
+        this.token = token;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        User user = (User) obj;
+        return id.equals(user.getId()) && firstName.equals(user.getFirstName()) && lastName.equals(user.getLastName());
     }
 
     @Override
