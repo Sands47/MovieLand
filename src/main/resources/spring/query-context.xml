@@ -44,7 +44,7 @@
     </bean>
 
     <bean id="getUserByEmailSQL" class="java.lang.String">
-        <constructor-arg value="SELECT id, first_name, last_name, email, password
+        <constructor-arg value="SELECT id, first_name, last_name, email, password, role
         FROM user
         WHERE email = ?;"/>
     </bean>

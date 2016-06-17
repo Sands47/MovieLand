@@ -1,6 +1,8 @@
 package com.voligov.movieland.entity;
 
 
+import com.voligov.movieland.util.enums.UserRole;
+
 import java.util.UUID;
 
 public class User {
@@ -10,6 +12,7 @@ public class User {
     private String email;
     private String password;
     private UUID token;
+    private UserRole role;
 
     public Integer getId() {
         return id;
@@ -59,6 +62,14 @@ public class User {
         this.token = token;
     }
 
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof User)) {
@@ -75,7 +86,8 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", token=" + token +
+                ", role=" + role +
                 '}';
     }
 }
