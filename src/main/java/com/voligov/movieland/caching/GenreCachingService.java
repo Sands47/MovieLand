@@ -30,6 +30,16 @@ public class GenreCachingService {
         return null;
     }
 
+    public Genre getByName(String name) {
+        for (Genre genre : genreCache) {
+            if (genre.getName().equals(name)) {
+                return genre;
+            }
+        }
+        log.warn("Genre with name = {} not found in cache", name);
+        return null;
+    }
+
     @Scheduled(fixedRate = 4 * 60 * 60 * 1000)
     public void updateGenreCache() {
         List<Genre> genresFromDb = genreService.getAll();
