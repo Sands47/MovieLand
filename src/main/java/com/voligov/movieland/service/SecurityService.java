@@ -7,7 +7,7 @@ import com.voligov.movieland.entity.UserToken;
 public interface SecurityService {
     boolean validateUser(UserCredentials credentials, User user);
 
-    boolean validateToken(String token, User user);
+    UserToken validateToken(String token);
 
     UserToken registerUser(User user);
 }

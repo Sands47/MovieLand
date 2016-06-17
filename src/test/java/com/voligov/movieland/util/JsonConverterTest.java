@@ -1,13 +1,13 @@
 package com.voligov.movieland.util;
 
 import com.voligov.movieland.entity.*;
+import com.voligov.movieland.util.gson.MovieSearchParams;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -116,5 +116,13 @@ public class JsonConverterTest {
         assertEquals(review.getMovie().getId().toString(), "1");
         assertEquals(review.getUser().getId().toString(), "2");
         assertEquals(review.getText(), "Test review");
+    }
+
+    @Test
+    public void testParseRating() {
+        String json = "{\"movie_id\": \"1\",\"rating\": \"10\"}";
+        Rating rating = jsonConverter.parseRating(json);
+        assertEquals(rating.getRating().toString(), "10");
+        assertEquals(rating.getMovie().getId().toString(), "1");
     }
 }

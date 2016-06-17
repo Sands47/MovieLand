@@ -4,7 +4,7 @@ import com.voligov.movieland.caching.GenreCachingService;
 import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.MovieSearchParams;
+import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.service.ReviewService;
@@ -64,7 +64,9 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> search(MovieSearchParams searchParams) {
         if (searchParams.getGenre() != null) {
             Genre genre = genreCachingService.getByName(searchParams.getGenre());
-            searchParams.setGenre(genre.getId().toString());
+            if (genre != null) {
+                searchParams.setGenre(genre.getId().toString());
+            }
         }
         List<Movie> movies = movieDao.search(searchParams);
         for (Movie movie : movies) {

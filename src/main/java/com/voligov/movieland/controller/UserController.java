@@ -21,15 +21,15 @@ public class UserController {
     @Autowired
     private JsonConverter jsonConverter;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/plain; charset=UTF-8")
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> authorizeUser(@RequestBody String json) {
         try {
             UserCredentials credentials = jsonConverter.parseUserCredentials(json);
             String token = userService.authoriseUser(credentials);
-            return new ResponseEntity<>(token, HttpStatus.OK);
+            return new ResponseEntity<>(jsonConverter.wrapResponse(token), HttpStatus.OK);
         } catch (SecurityException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 }

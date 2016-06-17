@@ -1,7 +1,7 @@
 package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.MovieSearchParams;
+import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,6 @@ public class MovieController {
     public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
                                                @RequestParam(value = "price", required = false) String priceOrder) {
         List<Movie> movies = movieService.getAll(ratingOrder, priceOrder);
-        if (movies.isEmpty()) {
-            return new ResponseEntity<>("Movies not found in database", HttpStatus.BAD_REQUEST);
-        }
         String json = jsonConverter.toJson(movies);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
@@ -38,7 +35,7 @@ public class MovieController {
     public ResponseEntity<String> getMovieById(@PathVariable int movieId) {
         Movie movie = movieService.getById(movieId);
         if (movie == null) {
-            return new ResponseEntity<>("Movie not found in database", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonConverter.wrapResponse("Movie not found in database"), HttpStatus.BAD_REQUEST);
         } else {
             String json = jsonConverter.toJson(movie);
             return new ResponseEntity<>(json, HttpStatus.OK);
@@ -50,9 +47,6 @@ public class MovieController {
     public ResponseEntity<String> searchMovies(@RequestBody String json) {
         MovieSearchParams searchParams = jsonConverter.parseSearchParams(json);
         List<Movie> movies = movieService.search(searchParams);
-        if (movies.isEmpty()) {
-            return new ResponseEntity<>("Movies not found in database", HttpStatus.BAD_REQUEST);
-        }
         String jsonResponse = jsonConverter.toJson(movies);
         return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }

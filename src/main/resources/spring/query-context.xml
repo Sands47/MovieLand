@@ -68,4 +68,31 @@
         <constructor-arg value="SELECT id, name
         FROM genre;"/>
     </bean>
+
+    <bean id="checkRatingSQL" class="java.lang.String">
+        <constructor-arg value="SELECT COUNT(*) FROM rating
+        WHERE movie_id = ? AND user_id = ?;"/>
+    </bean>
+
+    <bean id="addRatingSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO rating(movie_id, user_id, rating)
+        VALUES (?, ?, ?);"/>
+    </bean>
+
+    <bean id="updateRatingSQL" class="java.lang.String">
+        <constructor-arg value="UPDATE rating
+        SET rating = ?
+        WHERE movie_id = ? AND user_id = ?;"/>
+    </bean>
+
+    <bean id="avgRatingSQL" class="java.lang.String">
+        <constructor-arg value="SELECT AVG(rating) from rating
+        WHERE movie_id = ?;"/>
+    </bean>
+
+    <bean id="updateAvgRatingSQL" class="java.lang.String">
+        <constructor-arg value="UPDATE movie
+        SET rating = ?
+        WHERE id = ?;"/>
+    </bean>
 </beans>
