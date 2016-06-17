@@ -62,7 +62,15 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> search(MovieSearchParams searchParams) {
-        return movieDao.search(searchParams);
+        if (searchParams.getGenre() != null) {
+            Genre genre = genreCachingService.getByName(searchParams.getGenre());
+            searchParams.setGenre(genre.getId().toString());
+        }
+        List<Movie> movies = movieDao.search(searchParams);
+        for (Movie movie : movies) {
+            getGenres(movie);
+        }
+        return movies;
     }
 
     private void getGenres(Movie movie) {
