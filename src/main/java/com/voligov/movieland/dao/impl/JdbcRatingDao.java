@@ -1,20 +1,13 @@
 package com.voligov.movieland.dao.impl;
 
 import com.voligov.movieland.dao.RatingDao;
-import com.voligov.movieland.dao.ReviewDao;
-import com.voligov.movieland.dao.impl.mapper.RatingRowMapper;
-import com.voligov.movieland.dao.impl.mapper.ReviewRowMapper;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.entity.Rating;
-import com.voligov.movieland.entity.Review;
-import com.voligov.movieland.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class JdbcRatingDao implements RatingDao {
@@ -52,8 +45,8 @@ public class JdbcRatingDao implements RatingDao {
 
     @Override
     public void updateAverage(Movie movie) {
-        Double averageCount = jdbcTemplate.queryForObject(avgRatingSQL, Double.class, movie.getId());
-        jdbcTemplate.update(updateAvgRatingSQL, averageCount, movie.getId());
-        log.info("Rating for movie {} updated to {} to database", movie, averageCount);
+        Double average = jdbcTemplate.queryForObject(avgRatingSQL, Double.class, movie.getId());
+        jdbcTemplate.update(updateAvgRatingSQL, average, movie.getId());
+        log.info("Rating for movie {} updated to {} to database", movie, average);
     }
 }
