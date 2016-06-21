@@ -105,6 +105,15 @@ public class Movie {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Movie)) {
+            return false;
+        }
+        Movie movie = (Movie) obj;
+        return movie.getId().equals(id);
+    }
+
+    @Override
     public String toString() {
         return "Movie{" +
                 "id=" + id +

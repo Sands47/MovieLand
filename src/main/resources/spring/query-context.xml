@@ -69,9 +69,10 @@
         FROM genre;"/>
     </bean>
 
-    <bean id="checkRatingSQL" class="java.lang.String">
-        <constructor-arg value="SELECT COUNT(*) FROM rating
-        WHERE movie_id = ? AND user_id = ?;"/>
+    <bean id="getRatingSQL" class="java.lang.String">
+        <constructor-arg value="SELECT movie_id, user_id, rating
+        FROM rating
+        WHERE movie_id = ?;"/>
     </bean>
 
     <bean id="addRatingSQL" class="java.lang.String">

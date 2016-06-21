@@ -31,6 +31,15 @@ public class Rating {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Rating)) {
+            return false;
+        }
+        Rating rating = (Rating) obj;
+        return rating.getUser().getId().equals(user.getId()) && rating.getMovie().getId().equals(movie.getId());
+    }
+
+    @Override
     public String toString() {
         return "Rating{" +
                 "user=" + user +
