@@ -14,23 +14,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private SecurityService securityService;
-
     @Override
     public User getUser(UserCredentials credentials) {
         return userDao.getUserByEmail(credentials);
-    }
-
-    @Override
-    public String authoriseUser(UserCredentials credentials) {
-        if (credentials.isInvalid()) {
-            throw new SecurityException("User credentials are invalid");
-        }
-        User user = getUser(credentials);
-        if (user == null || !securityService.validateUser(credentials, user)) {
-            throw new SecurityException("Login or password are invalid");
-        }
-        return securityService.registerUser(user).getToken();
     }
 }

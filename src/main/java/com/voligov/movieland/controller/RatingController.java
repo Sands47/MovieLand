@@ -1,7 +1,9 @@
 package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.Rating;
+import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.RatingService;
+import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,9 @@ public class RatingController {
     private RatingService ratingService;
 
     @Autowired
+    private SecurityService securityService;
+
+    @Autowired
     private JsonConverter jsonConverter;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
@@ -23,7 +28,9 @@ public class RatingController {
     public ResponseEntity<String> rate(@RequestHeader("token") String token, @RequestBody String json) {
         try {
             Rating rating = jsonConverter.parseRating(json);
-            if (ratingService.add(rating, token)) {
+            UserToken userToken = securityService.validateToken(token);
+            rating.setUser(userToken.getUser());
+            if (ratingService.add(rating)) {
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(jsonConverter.wrapResponse("Rating must be between 0 and 10"), HttpStatus.BAD_REQUEST);

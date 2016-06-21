@@ -2,6 +2,7 @@ package com.voligov.movieland.service.impl;
 
 import com.voligov.movieland.dao.ReviewDao;
 import com.voligov.movieland.entity.Review;
+import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.ReviewService;
 import com.voligov.movieland.service.SecurityService;
@@ -17,19 +18,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private ReviewDao reviewDao;
 
-    @Autowired
-    private SecurityService securityService;
-
     @Override
     public List<Review> getByMovieId(int movieId) {
         return reviewDao.getByMovieId(movieId);
     }
 
     @Override
-    public boolean add(Review review, String token) {
-        UserToken userToken = securityService.validateToken(token);
-        if (userToken.getUser().getId().equals(review.getUser().getId())
-                || userToken.getUser().getRole() == UserRole.ADMIN) {
+    public boolean add(Review review, User user) {
+        if (user.getId().equals(review.getUser().getId())
+                || user.getRole() == UserRole.ADMIN) {
             return reviewDao.add(review);
         } else {
             throw new SecurityException("You can only add reviews for your own user");
@@ -37,10 +34,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public boolean delete(Review review, String token) {
-        UserToken userToken = securityService.validateToken(token);
-        if (userToken.getUser().getId().equals(review.getUser().getId())
-                || userToken.getUser().getRole() == UserRole.ADMIN) {
+    public boolean delete(Review review, User user) {
+        if (user.getId().equals(review.getUser().getId())
+                || user.getRole() == UserRole.ADMIN) {
             return reviewDao.delete(review);
         } else {
             throw new SecurityException("You can only delete your own review");

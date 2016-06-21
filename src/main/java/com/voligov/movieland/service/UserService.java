@@ -5,6 +5,4 @@ import com.voligov.movieland.entity.UserCredentials;
 
 public interface UserService {
     User getUser(UserCredentials credentials);
-
-    String authoriseUser(UserCredentials credentials);
 }
