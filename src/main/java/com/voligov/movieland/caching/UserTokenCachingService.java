@@ -24,22 +24,21 @@ public class UserTokenCachingService {
     public UserToken addToCache(UserToken token) {
         try {
             readLock.lock();
-            if (tokenCache.contains(token)) {
-                return tokenCache.get(tokenCache.indexOf(token));
-            } else {
-                try {
-                    readLock.unlock();
-                    writeLock.lock();
-                    tokenCache.add(token);
-                    log.info("Token for user Id = {} added to cache", token.getUser().getId());
-                    return token;
-                } finally {
-                    writeLock.unlock();
-                    readLock.lock();
-                }
+            int index = tokenCache.indexOf(token);
+            if (index != -1) {
+                log.info("Token for user Id = {} already exists in cache", token.getUser().getId());
+                return tokenCache.get(index);
             }
         } finally {
             readLock.unlock();
+        }
+        try {
+            writeLock.lock();
+            tokenCache.add(token);
+            log.info("Token for user Id = {} added to cache", token.getUser().getId());
+            return token;
+        } finally {
+            writeLock.unlock();
         }
     }
 
