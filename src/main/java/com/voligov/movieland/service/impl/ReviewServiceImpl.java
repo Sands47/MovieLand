@@ -25,8 +25,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public boolean add(Review review, User user) {
-        if (user.getId().equals(review.getUser().getId())
-                || user.getRole() == UserRole.ADMIN) {
+        if (user.getId().equals(review.getUser().getId())) {
             return reviewDao.add(review);
         } else {
             throw new SecurityException("You can only add reviews for your own user");
