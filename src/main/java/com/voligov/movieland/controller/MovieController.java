@@ -1,6 +1,9 @@
 package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.UserToken;
+import com.voligov.movieland.service.SecurityService;
+import com.voligov.movieland.util.enums.UserRole;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.util.JsonConverter;
@@ -19,6 +22,9 @@ public class MovieController {
     private MovieService movieService;
 
     @Autowired
+    private SecurityService securityService;
+
+    @Autowired
     private JsonConverter jsonConverter;
 
     @RequestMapping(produces = "application/json; charset=UTF-8")
@@ -28,6 +34,18 @@ public class MovieController {
         List<Movie> movies = movieService.getAll(ratingOrder, priceOrder);
         String json = jsonConverter.toJson(movies);
         return new ResponseEntity<>(json, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> addMovie(@RequestHeader("token") String token, @RequestBody String json) {
+        UserToken userToken = securityService.validateToken(token);
+        if (userToken.getUser().getRole() != UserRole.ADMIN) {
+            return new ResponseEntity<>(jsonConverter.wrapResponse("Only admins can add movies"), HttpStatus.UNAUTHORIZED);
+        }
+        Movie movie = jsonConverter.parseMovie(json);
+        movieService.add(movie);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")

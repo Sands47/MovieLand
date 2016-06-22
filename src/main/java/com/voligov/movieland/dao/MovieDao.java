@@ -2,6 +2,7 @@ package com.voligov.movieland.dao;
 
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.util.gson.MovieSearchParams;
+
 import java.util.List;
 
 public interface MovieDao {
@@ -10,4 +11,6 @@ public interface MovieDao {
     Movie getById(int id);
 
     List<Movie> search(MovieSearchParams searchParams);
+
+    void add(Movie movie);
 }

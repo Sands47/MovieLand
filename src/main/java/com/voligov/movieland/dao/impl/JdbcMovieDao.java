@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
@@ -25,6 +26,12 @@ public class JdbcMovieDao implements MovieDao {
 
     @Autowired
     private String getMovieByIdSQL;
+
+    @Autowired
+    private String addMovieSQL;
+
+    @Autowired
+    private String getMovieIdSQL;
 
     private final QueryBuilder queryBuilder = new QueryBuilder();
 
@@ -50,5 +57,15 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public List<Movie> search(MovieSearchParams searchParams) {
         return jdbcTemplate.query(queryBuilder.buildSearchQuery(searchParams, getAllMoviesSQL), movieRowMapper);
+    }
+
+    @Override
+    public void add(Movie movie) {
+        jdbcTemplate.update(addMovieSQL, movie.getName(), movie.getNameOriginal(), movie.getReleaseYear(),
+                movie.getDescription(), movie.getPrice());
+        Integer movieId = jdbcTemplate.queryForObject(getMovieIdSQL, Integer.class, movie.getName(), movie.getNameOriginal());
+        log.info("Movie {} added to database. Id {} generated", movie, movieId);
+        movie.setId(movieId);
+
     }
 }

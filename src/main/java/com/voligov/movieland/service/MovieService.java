@@ -11,4 +11,6 @@ public interface MovieService {
     Movie getById(int id);
 
     List<Movie> search(MovieSearchParams searchParams);
+
+    void add(Movie movie);
 }

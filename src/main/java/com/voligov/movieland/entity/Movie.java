@@ -12,8 +12,9 @@ public class Movie {
     private Double rating;
     private Double price;
     private String genreIds;
+    private String countryIds;
     private List<Genre> genres;
-    private List<String> countries;
+    private List<Country> countries;
     private List<Review> reviews;
 
     public List<Genre> getGenres() {
@@ -80,11 +81,11 @@ public class Movie {
         this.price = price;
     }
 
-    public List<String> getCountries() {
+    public List<Country> getCountries() {
         return countries;
     }
 
-    public void setCountries(List<String> countries) {
+    public void setCountries(List<Country> countries) {
         this.countries = countries;
     }
 
@@ -102,6 +103,14 @@ public class Movie {
 
     public void setGenreIds(String genreIds) {
         this.genreIds = genreIds;
+    }
+
+    public String getCountryIds() {
+        return countryIds;
+    }
+
+    public void setCountryIds(String countryIds) {
+        this.countryIds = countryIds;
     }
 
     @Override

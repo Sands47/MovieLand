@@ -8,14 +8,12 @@
         <constructor-arg value="SELECT *
         FROM (SELECT t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price,
         GROUP_CONCAT(DISTINCT t2.genre_id ORDER BY t2.genre_id DESC SEPARATOR ',') genres,
-        GROUP_CONCAT(DISTINCT t5.name ORDER BY t5.name DESC SEPARATOR ', ') countries
+        GROUP_CONCAT(DISTINCT t4.country_id ORDER BY t4.country_id DESC SEPARATOR ',') countries
         FROM movie t1
         LEFT JOIN movie_genre t2
         ON t1.id = t2.movie_id
         LEFT JOIN movie_country t4
         on t1.id = t4.movie_id
-        LEFT JOIN country t5
-        on t4.country_id = t5.id
         GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price) t
         "/>
     </bean>
@@ -23,14 +21,12 @@
     <bean id="getMovieByIdSQL" class="java.lang.String">
         <constructor-arg value="SELECT t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price,
         GROUP_CONCAT(DISTINCT t2.genre_id ORDER BY t2.genre_id DESC SEPARATOR ',') genres,
-        GROUP_CONCAT(DISTINCT t5.name ORDER BY t5.name DESC SEPARATOR ', ') countries
+        GROUP_CONCAT(DISTINCT t4.country_id ORDER BY t4.country_id DESC SEPARATOR ',') countries
         FROM movie t1
         LEFT JOIN movie_genre t2
         ON t1.id = t2.movie_id
         LEFT JOIN movie_country t4
         on t1.id = t4.movie_id
-        LEFT JOIN country t5
-        on t4.country_id = t5.id
         WHERE t1.id = ?
         GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price;"/>
     </bean>
@@ -69,6 +65,11 @@
         FROM genre;"/>
     </bean>
 
+    <bean id="getCountriesSQL" class="java.lang.String">
+        <constructor-arg value="SELECT id, name
+        FROM country;"/>
+    </bean>
+
     <bean id="getRatingSQL" class="java.lang.String">
         <constructor-arg value="SELECT movie_id, user_id, rating
         FROM rating
@@ -95,5 +96,25 @@
         <constructor-arg value="UPDATE movie
         SET rating = ?
         WHERE id = ?;"/>
+    </bean>
+
+    <bean id="addMovieSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO movie(name, name_original, release_year, description, price)
+        VALUES (?, ?, ?, ?, ?);"/>
+    </bean>
+
+    <bean id="getMovieIdSQL" class="java.lang.String">
+        <constructor-arg value="SELECT id from movie
+        WHERE name = ? AND name_original = ?;"/>
+    </bean>
+
+    <bean id="addMovieGenreSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO movie_genre(movie_id, genre_id)
+        VALUES (?, ?);"/>
+    </bean>
+
+    <bean id="addMovieCountrySQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO movie_country(movie_id, country_id)
+        VALUES (?, ?);"/>
     </bean>
 </beans>

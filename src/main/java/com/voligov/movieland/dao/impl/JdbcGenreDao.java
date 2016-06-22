@@ -3,6 +3,7 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.GenreDao;
 import com.voligov.movieland.dao.impl.mapper.GenreRowMapper;
 import com.voligov.movieland.entity.Genre;
+import com.voligov.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,20 @@ public class JdbcGenreDao implements GenreDao {
     @Autowired
     private String getGenresSQL;
 
+    @Autowired
+    private String addMovieGenreSQL;
+
     private final GenreRowMapper genreRowMapper = new GenreRowMapper();
 
     @Override
     public List<Genre> getAll() {
         return jdbcTemplate.query(getGenresSQL, genreRowMapper);
+    }
+
+    @Override
+    public void addGenresForMovie(Movie movie) {
+        for (Genre genre : movie.getGenres()) {
+            jdbcTemplate.update(addMovieGenreSQL, movie.getId(), genre.getId());
+        }
     }
 }
