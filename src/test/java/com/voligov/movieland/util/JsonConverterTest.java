@@ -1,23 +1,16 @@
 package com.voligov.movieland.util;
 
 import com.voligov.movieland.entity.*;
-import org.junit.BeforeClass;
+import com.voligov.movieland.util.gson.MovieSearchParams;
 import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
 public class JsonConverterTest {
-    private static JsonConverter jsonConverter;
-
-    @BeforeClass
-    public static void setUp() {
-        jsonConverter = new JsonConverter();
-    }
+    private JsonConverter jsonConverter = new JsonConverter();
 
     @Test
     public void testMovieListToJson() {
@@ -40,8 +33,6 @@ public class JsonConverterTest {
         genre.setName("Action");
         genres.add(genre);
         movie.setGenres(genres);
-        List<String> countries = Arrays.asList("USA", "country2", "country3");
-        movie.setCountries(countries);
         List<Movie> movies = new ArrayList<>();
         movies.add(movie);
         movies.add(movie);
@@ -52,10 +43,11 @@ public class JsonConverterTest {
 
     @Test
     public void testMovieToJson() {
-        String expectedJson = "{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\",\"nameOriginal\":\"Jay and Silent Bob Strike Back\"," +
-                "\"releaseYear\":1999,\"description\":\"description\",\"rating\":10.0,\"genres\":[{\"name\":\"Comedy\"},{\"name\":\"Action\"}],\"countries\":[\"USA\"," +
-                "\"country2\",\"country3\"],\"reviews\":[{\"user\":{\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"}," +
-                "{\"user\":{\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"}]}";
+        String expectedJson = "{\"name\":\"Джей и Молчаливый Боб Наносят Ответный Удар\",\"nameOriginal\":" +
+                "\"Jay and Silent Bob Strike Back\",\"releaseYear\":1999,\"description\":\"description\",\"rating\":10.0," +
+                "\"genres\":[{\"name\":\"Comedy\"},{\"name\":\"Action\"}],\"countries\":[{\"name\":\"USA\"},{\"name\":\"Test\"}]," +
+                "\"reviews\":[{\"user\":{\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"},{\"user\":{" +
+                "\"firstName\":\"Anton\",\"lastName\":\"Sosnitskiy\"},\"text\":\"Test review\"}]}";
         Movie movie = new Movie();
         movie.setId(1);
         movie.setName("Джей и Молчаливый Боб Наносят Ответный Удар");
@@ -72,7 +64,13 @@ public class JsonConverterTest {
         genre.setName("Action");
         genres.add(genre);
         movie.setGenres(genres);
-        List<String> countries = Arrays.asList("USA", "country2", "country3");
+        List<Country> countries = new ArrayList<>();
+        Country country = new Country();
+        country.setName("USA");
+        countries.add(country);
+        country = new Country();
+        country.setName("Test");
+        countries.add(country);
         movie.setCountries(countries);
         Review review = new Review();
         review.setId(1);
@@ -116,5 +114,13 @@ public class JsonConverterTest {
         assertEquals(review.getMovie().getId().toString(), "1");
         assertEquals(review.getUser().getId().toString(), "2");
         assertEquals(review.getText(), "Test review");
+    }
+
+    @Test
+    public void testParseRating() {
+        String json = "{\"movie_id\": \"1\",\"rating\": \"10\"}";
+        Rating rating = jsonConverter.parseRating(json);
+        assertEquals(rating.getRating().toString(), "10");
+        assertEquals(rating.getMovie().getId().toString(), "1");
     }
 }

@@ -1,6 +1,6 @@
 package com.voligov.movieland.entity;
 
-public class Genre {
+public class Country {
     private Integer id;
     private String name;
 
@@ -22,19 +22,19 @@ public class Genre {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Genre)) {
+        if (!(obj instanceof Country)) {
             return false;
         }
-        Genre genre = (Genre) obj;
+        Country country = (Country) obj;
         if (name == null) {
-            return genre.getId().equals(id);
+            return country.getId().equals(id);
         }
-        return genre.getId().equals(id) && genre.getName().equals(name);
+        return country.getId().equals(id) && country.getName().equals(name);
     }
 
     @Override
     public String toString() {
-        return "Genre{" +
+        return "Country{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

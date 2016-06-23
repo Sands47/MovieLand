@@ -2,22 +2,20 @@ package com.voligov.movieland.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.MovieSearchParams;
-import com.voligov.movieland.entity.Review;
-import com.voligov.movieland.entity.UserCredentials;
-import com.voligov.movieland.util.gson.FieldExclusionStrategy;
-import com.voligov.movieland.util.gson.ReviewJsonDeserializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.voligov.movieland.caching.GenreCachingService;
+import com.voligov.movieland.entity.*;
+import com.voligov.movieland.util.gson.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class JsonConverter {
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private GenreCachingService genreCachingService;
 
     private static final List<String> GET_ALL_MOVIES_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "rating", "genres", "name");
     private static final List<String> GET_MOVIE_BY_ID_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "countries", "genres", "name",
@@ -27,6 +25,8 @@ public class JsonConverter {
     private Gson gsonGetAllMovies = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_ALL_MOVIES_RESPONSE_FIELDS)).create();
     private Gson gsonGetMovieById = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_MOVIE_BY_ID_RESPONSE_FIELDS)).create();
     private Gson gsonParseReview = new GsonBuilder().registerTypeAdapter(Review.class, new ReviewJsonDeserializer()).create();
+    private Gson gsonParseRating = new GsonBuilder().registerTypeAdapter(Rating.class, new RatingJsonDeserializer()).create();
+    private Gson gsonParseMovie = new GsonBuilder().registerTypeAdapter(Movie.class, new MovieJsonDeserializer()).create();
 
     public String toJson(List<Movie> movies) {
         return gsonGetAllMovies.toJson(movies);
@@ -46,5 +46,17 @@ public class JsonConverter {
 
     public Review parseReview(String json) {
         return gsonParseReview.fromJson(json, Review.class);
+    }
+
+    public Rating parseRating(String json) {
+        return gsonParseRating.fromJson(json, Rating.class);
+    }
+
+    public String wrapResponse(String response) {
+        return gson.toJson(response, String.class);
+    }
+
+    public Movie parseMovie(String json) {
+        return gsonParseMovie.fromJson(json, Movie.class);
     }
 }

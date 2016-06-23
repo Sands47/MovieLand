@@ -22,18 +22,23 @@ public class MovieComparatorTest {
     @BeforeClass
     public static void setUpBeforeClass() {
         movie1 = new Movie();
+        movie1.setId(1);
         movie1.setRating(8.0);
         movie1.setPrice(20.0);
         movie2 = new Movie();
+        movie2.setId(2);
         movie2.setRating(6.0);
         movie2.setPrice(30.0);
         movie3 = new Movie();
+        movie3.setId(3);
         movie3.setRating(8.5);
         movie3.setPrice(15.0);
         movie4 = new Movie();
+        movie4.setId(4);
         movie4.setRating(8.0);
         movie4.setPrice(40.0);
         movie5 = new Movie();
+        movie5.setId(5);
         movie5.setRating(7.5);
         movie5.setPrice(30.0);
     }

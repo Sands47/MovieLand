@@ -11,9 +11,8 @@ public class Movie {
     private String description;
     private Double rating;
     private Double price;
-    private String genreIds;
     private List<Genre> genres;
-    private List<String> countries;
+    private List<Country> countries;
     private List<Review> reviews;
 
     public List<Genre> getGenres() {
@@ -80,11 +79,11 @@ public class Movie {
         this.price = price;
     }
 
-    public List<String> getCountries() {
+    public List<Country> getCountries() {
         return countries;
     }
 
-    public void setCountries(List<String> countries) {
+    public void setCountries(List<Country> countries) {
         this.countries = countries;
     }
 
@@ -96,12 +95,13 @@ public class Movie {
         this.reviews = reviews;
     }
 
-    public String getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(String genreIds) {
-        this.genreIds = genreIds;
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Movie)) {
+            return false;
+        }
+        Movie movie = (Movie) obj;
+        return movie.getId().equals(id);
     }
 
     @Override

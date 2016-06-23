@@ -1,12 +1,13 @@
 package com.voligov.movieland.dao.impl.mapper;
 
+import com.voligov.movieland.entity.Country;
+import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MovieRowMapper implements RowMapper<Movie> {
@@ -20,10 +21,26 @@ public class MovieRowMapper implements RowMapper<Movie> {
         movie.setDescription(resultSet.getString("description"));
         movie.setRating(resultSet.getDouble("rating"));
         movie.setPrice(resultSet.getDouble("price"));
-        movie.setGenreIds(resultSet.getString("genres"));
+        String genres = resultSet.getString("genres");
+        if (genres != null) {
+            String[] genresArray = genres.split(",");
+            List<Genre> genresList = new ArrayList<>();
+            for (String genreId : genresArray) {
+                Genre genre = new Genre();
+                genre.setId(Integer.valueOf(genreId));
+                genresList.add(genre);
+            }
+            movie.setGenres(genresList);
+        }
         String countries = resultSet.getString("countries");
         if (countries != null) {
-            List<String> countriesList = new ArrayList<>(Arrays.asList(countries.split(",")));
+            String[] countriesArray = countries.split(",");
+            List<Country> countriesList = new ArrayList<>();
+            for (String countryId : countriesArray) {
+                Country country = new Country();
+                country.setId(Integer.valueOf(countryId));
+                countriesList.add(country);
+            }
             movie.setCountries(countriesList);
         }
         return movie;

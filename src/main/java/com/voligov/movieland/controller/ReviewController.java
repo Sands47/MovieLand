@@ -1,7 +1,9 @@
 package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.Review;
+import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.ReviewService;
+import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,35 +18,40 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @Autowired
+    private SecurityService securityService;
+
+    @Autowired
     private JsonConverter jsonConverter;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> addReview(@RequestHeader("token") String token, @RequestBody String json) {
         try {
             Review review = jsonConverter.parseReview(json);
-            if (reviewService.add(review, token)) {
+            UserToken userToken = securityService.validateToken(token);
+            if (reviewService.add(review, userToken.getUser())) {
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("You already have a review for this movie", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(jsonConverter.wrapResponse("You already have a review for this movie"), HttpStatus.BAD_REQUEST);
             }
         } catch (SecurityException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> deleteReview(@RequestHeader("token") String token, @RequestBody String json) {
         try {
             Review review = jsonConverter.parseReview(json);
-            if (reviewService.delete(review, token)) {
+            UserToken userToken = securityService.validateToken(token);
+            if (reviewService.delete(review, userToken.getUser())) {
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Review doesn't exist", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(jsonConverter.wrapResponse("Review doesn't exist"), HttpStatus.BAD_REQUEST);
             }
         } catch (SecurityException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
         }
     }
 }

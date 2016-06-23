@@ -1,6 +1,6 @@
 package com.voligov.movieland.util;
 
-import com.voligov.movieland.entity.MovieSearchParams;
+import com.voligov.movieland.util.gson.MovieSearchParams;
 
 public class QueryBuilder {
 
