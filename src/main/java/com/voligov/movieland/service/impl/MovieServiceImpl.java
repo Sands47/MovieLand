@@ -92,6 +92,7 @@ public class MovieServiceImpl implements MovieService {
         List<Movie> movies = movieDao.search(searchParams);
         for (Movie movie : movies) {
             getGenres(movie);
+            getCountries(movie);
         }
         return movies;
     }
@@ -99,51 +100,23 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void add(Movie movie) {
         movieDao.add(movie);
-        if (movie.getGenreIds() != null) {
-            List<Genre> genresList = new ArrayList<>();
-            String[] genresSplit = movie.getGenreIds().split(",");
-            for (String genreName : genresSplit) {
-                Genre genre = genreCachingService.getByName(genreName);
-                if (genre != null) {
-                    genresList.add(genre);
-                }
-            }
-            movie.setGenres(genresList);
-            genreService.addGenresForMovie(movie);
-        }
-        if (movie.getCountryIds() != null) {
-            List<Country> countriesList = new ArrayList<>();
-            String[] countriesSplit = movie.getCountryIds().split(",");
-            for (String countryName : countriesSplit) {
-                Country country = countryCachingService.getByName(countryName);
-                if (country != null) {
-                    countriesList.add(country);
-                }
-            }
-            movie.setCountries(countriesList);
-            countryService.addCountriesForMovie(movie);
-        }
+        genreService.addGenresForMovie(movie);
+        countryService.addCountriesForMovie(movie);
     }
 
     private void getGenres(Movie movie) {
-        if (movie.getGenreIds() != null) {
-            String[] genres = movie.getGenreIds().split(",");
-            List<Genre> genresList = new ArrayList<>();
-            for (String genre : genres) {
-                genresList.add(genreCachingService.getById(Integer.valueOf(genre)));
+        if (movie.getGenres() != null) {
+            for (Genre genre : movie.getGenres()) {
+                genre.setName(genreCachingService.getById(genre.getId()).getName());
             }
-            movie.setGenres(genresList);
         }
     }
 
     private void getCountries(Movie movie) {
-        if (movie.getCountryIds() != null) {
-            String[] countries = movie.getCountryIds().split(",");
-            List<Country> countriesList = new ArrayList<>();
-            for (String country : countries) {
-                countriesList.add(countryCachingService.getById(Integer.valueOf(country)));
+        if (movie.getCountries() != null) {
+            for (Country country : movie.getCountries()) {
+                country.setName(countryCachingService.getById(country.getId()).getName());
             }
-            movie.setCountries(countriesList);
         }
     }
 }

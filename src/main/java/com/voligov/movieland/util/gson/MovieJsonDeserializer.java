@@ -1,15 +1,11 @@
 package com.voligov.movieland.util.gson;
 
 import com.google.gson.*;
-import com.voligov.movieland.caching.GenreCachingService;
+import com.voligov.movieland.entity.Country;
 import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MovieJsonDeserializer implements JsonDeserializer<Movie> {
@@ -43,11 +39,25 @@ public class MovieJsonDeserializer implements JsonDeserializer<Movie> {
         }
         JsonElement countries = jsonObject.get("countries");
         if (countries != null) {
-            movie.setCountryIds(countries.getAsString());
+            JsonArray countriesArray = countries.getAsJsonArray();
+            List<Country> countryList = new ArrayList<>();
+            for (JsonElement jsonElement : countriesArray) {
+                Country country = new Country();
+                country.setId(jsonElement.getAsInt());
+                countryList.add(country);
+            }
+            movie.setCountries(countryList);
         }
         JsonElement genres = jsonObject.get("genres");
         if (genres != null) {
-            movie.setGenreIds(genres.getAsString());
+            JsonArray genresArray = genres.getAsJsonArray();
+            List<Genre> genreList = new ArrayList<>();
+            for (JsonElement jsonElement : genresArray) {
+                Genre genre = new Genre();
+                genre.setId(jsonElement.getAsInt());
+                genreList.add(genre);
+            }
+            movie.setGenres(genreList);
         }
         return movie;
     }

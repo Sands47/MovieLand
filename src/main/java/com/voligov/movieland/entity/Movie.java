@@ -11,8 +11,6 @@ public class Movie {
     private String description;
     private Double rating;
     private Double price;
-    private String genreIds;
-    private String countryIds;
     private List<Genre> genres;
     private List<Country> countries;
     private List<Review> reviews;
@@ -95,22 +93,6 @@ public class Movie {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
-    }
-
-    public String getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(String genreIds) {
-        this.genreIds = genreIds;
-    }
-
-    public String getCountryIds() {
-        return countryIds;
-    }
-
-    public void setCountryIds(String countryIds) {
-        this.countryIds = countryIds;
     }
 
     @Override

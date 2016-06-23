@@ -26,6 +26,9 @@ public class Genre {
             return false;
         }
         Genre genre = (Genre) obj;
+        if (name == null) {
+            return genre.getId().equals(id);
+        }
         return genre.getId().equals(id) && genre.getName().equals(name);
     }
 
