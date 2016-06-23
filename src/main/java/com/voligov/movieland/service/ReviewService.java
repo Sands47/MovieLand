@@ -8,7 +8,7 @@ import java.util.List;
 public interface ReviewService {
     List<Review> getByMovieId(int movieId);
 
-    boolean add(Review review, User user);
+    boolean add(Review review);
 
-    boolean delete(Review review, User user);
+    boolean delete(Review review);
 }

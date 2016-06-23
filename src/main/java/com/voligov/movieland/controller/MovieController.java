@@ -2,8 +2,6 @@ package com.voligov.movieland.controller;
 
 import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.UserToken;
-import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.util.enums.UserRole;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
@@ -21,9 +19,6 @@ import java.util.List;
 public class MovieController {
     @Autowired
     private MovieService movieService;
-
-    @Autowired
-    private SecurityService securityService;
 
     @Autowired
     private JsonConverter jsonConverter;

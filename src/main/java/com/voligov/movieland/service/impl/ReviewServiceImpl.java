@@ -24,21 +24,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public boolean add(Review review, User user) {
-        if (user.getId().equals(review.getUser().getId())) {
-            return reviewDao.add(review);
-        } else {
-            throw new SecurityException("You can only add reviews for your own user");
-        }
+    public boolean add(Review review) {
+        return reviewDao.add(review);
     }
 
     @Override
-    public boolean delete(Review review, User user) {
-        if (user.getId().equals(review.getUser().getId())
-                || user.getRole() == UserRole.ADMIN) {
-            return reviewDao.delete(review);
-        } else {
-            throw new SecurityException("You can only delete your own review");
-        }
+    public boolean delete(Review review) {
+        return reviewDao.delete(review);
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AuthentificationInterceptor implements HandlerInterceptor {
+public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Autowired
     private SecurityService securityService;
@@ -28,6 +28,8 @@ public class AuthentificationInterceptor implements HandlerInterceptor {
                 UserRole requiredRole = roleRequired.role();
                 if (!userToken.getUser().getRole().equalOrHigher(requiredRole)) {
                     throw new SecurityException("Role required: " + requiredRole);
+                } else {
+                    httpServletRequest.setAttribute("authorizedUser", userToken.getUser());
                 }
             }
         }
