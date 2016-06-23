@@ -1,4 +1,4 @@
-package com.voligov.movieland.controller.exception;
+package com.voligov.movieland.exception;
 
 import com.voligov.movieland.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;

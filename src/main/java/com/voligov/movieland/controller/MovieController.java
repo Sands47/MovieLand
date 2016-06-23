@@ -1,5 +1,6 @@
 package com.voligov.movieland.controller;
 
+import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.SecurityService;
@@ -36,13 +37,10 @@ public class MovieController {
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
+    @RoleRequired(role = UserRole.ADMIN)
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> addMovie(@RequestHeader("token") String token, @RequestBody String json) {
-        UserToken userToken = securityService.validateToken(token);
-        if (userToken.getUser().getRole() != UserRole.ADMIN) {
-            return new ResponseEntity<>(jsonConverter.wrapError("Only admins can add movies"), HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<String> addMovie(@RequestBody String json) {
         Movie movie = jsonConverter.parseMovie(json);
         movieService.add(movie);
         return new ResponseEntity<>(HttpStatus.OK);

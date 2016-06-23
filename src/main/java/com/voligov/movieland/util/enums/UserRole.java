@@ -17,4 +17,8 @@ public enum UserRole {
         }
         return GUEST;
     }
+
+    public boolean equalOrHigher(UserRole requiredRole) {
+        return role >= requiredRole.role;
+    }
 }

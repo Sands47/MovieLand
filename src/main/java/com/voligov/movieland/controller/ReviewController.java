@@ -1,10 +1,12 @@
 package com.voligov.movieland.controller;
 
+import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.ReviewService;
 import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.util.JsonConverter;
+import com.voligov.movieland.util.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class ReviewController {
     @Autowired
     private JsonConverter jsonConverter;
 
+    @RoleRequired(role = UserRole.USER)
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> addReview(@RequestHeader("token") String token, @RequestBody String json) {
@@ -35,6 +38,7 @@ public class ReviewController {
         }
     }
 
+    @RoleRequired(role = UserRole.USER)
     @RequestMapping(method = RequestMethod.DELETE, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> deleteReview(@RequestHeader("token") String token, @RequestBody String json) {
