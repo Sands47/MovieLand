@@ -26,20 +26,16 @@ public class RatingController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> rate(@RequestHeader("token") String token, @RequestBody String json) {
-        try {
-            Rating rating = jsonConverter.parseRating(json);
-            UserToken userToken = securityService.validateToken(token);
-            rating.setUser(userToken.getUser());
-            if (rating.getRating() > 10 || rating.getRating() < 0) {
-                return new ResponseEntity<>(jsonConverter.wrapResponse("Rating must be between 0 and 10"), HttpStatus.BAD_REQUEST);
-            }
-            if (ratingService.add(rating)) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(jsonConverter.wrapResponse("Rating already exists"), HttpStatus.BAD_REQUEST);
-            }
-        } catch (SecurityException e) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
+        Rating rating = jsonConverter.parseRating(json);
+        UserToken userToken = securityService.validateToken(token);
+        rating.setUser(userToken.getUser());
+        if (rating.getRating() > 10 || rating.getRating() < 0) {
+            return new ResponseEntity<>(jsonConverter.wrapError("Rating must be between 0 and 10"), HttpStatus.BAD_REQUEST);
+        }
+        if (ratingService.add(rating)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(jsonConverter.wrapError("Rating already exists"), HttpStatus.BAD_REQUEST);
         }
     }
 }

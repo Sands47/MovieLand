@@ -31,11 +31,11 @@ public class UserController {
     public ResponseEntity<String> authorizeUser(@RequestBody String json) {
         UserCredentials credentials = jsonConverter.parseUserCredentials(json);
         if (credentials.isInvalid()) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse("User credentials are invalid"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonConverter.wrapError("User credentials are invalid"), HttpStatus.BAD_REQUEST);
         }
         User user = userService.getUser(credentials);
         if (user == null || !securityService.validateUser(credentials, user)) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse("Login or password are invalid"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonConverter.wrapError("Login or password are invalid"), HttpStatus.BAD_REQUEST);
         }
         String token = securityService.registerUser(user).getToken();
         return new ResponseEntity<>(jsonConverter.wrapResponse(token), HttpStatus.OK);

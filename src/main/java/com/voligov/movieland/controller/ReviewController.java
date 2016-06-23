@@ -26,32 +26,24 @@ public class ReviewController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> addReview(@RequestHeader("token") String token, @RequestBody String json) {
-        try {
-            Review review = jsonConverter.parseReview(json);
-            UserToken userToken = securityService.validateToken(token);
-            if (reviewService.add(review, userToken.getUser())) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(jsonConverter.wrapResponse("You already have a review for this movie"), HttpStatus.BAD_REQUEST);
-            }
-        } catch (SecurityException e) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
+        Review review = jsonConverter.parseReview(json);
+        UserToken userToken = securityService.validateToken(token);
+        if (reviewService.add(review, userToken.getUser())) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(jsonConverter.wrapError("You already have a review for this movie"), HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(method = RequestMethod.DELETE, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> deleteReview(@RequestHeader("token") String token, @RequestBody String json) {
-        try {
-            Review review = jsonConverter.parseReview(json);
-            UserToken userToken = securityService.validateToken(token);
-            if (reviewService.delete(review, userToken.getUser())) {
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(jsonConverter.wrapResponse("Review doesn't exist"), HttpStatus.BAD_REQUEST);
-            }
-        } catch (SecurityException e) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
+        Review review = jsonConverter.parseReview(json);
+        UserToken userToken = securityService.validateToken(token);
+        if (reviewService.delete(review, userToken.getUser())) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(jsonConverter.wrapError("Review doesn't exist"), HttpStatus.BAD_REQUEST);
         }
     }
 }

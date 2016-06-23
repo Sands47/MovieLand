@@ -39,17 +39,13 @@ public class MovieController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> addMovie(@RequestHeader("token") String token, @RequestBody String json) {
-        try {
-            UserToken userToken = securityService.validateToken(token);
-            if (userToken.getUser().getRole() != UserRole.ADMIN) {
-                return new ResponseEntity<>(jsonConverter.wrapResponse("Only admins can add movies"), HttpStatus.UNAUTHORIZED);
-            }
-            Movie movie = jsonConverter.parseMovie(json);
-            movieService.add(movie);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (SecurityException e) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
+        UserToken userToken = securityService.validateToken(token);
+        if (userToken.getUser().getRole() != UserRole.ADMIN) {
+            return new ResponseEntity<>(jsonConverter.wrapError("Only admins can add movies"), HttpStatus.UNAUTHORIZED);
         }
+        Movie movie = jsonConverter.parseMovie(json);
+        movieService.add(movie);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")
@@ -57,7 +53,7 @@ public class MovieController {
     public ResponseEntity<String> getMovieById(@PathVariable int movieId) {
         Movie movie = movieService.getById(movieId);
         if (movie == null) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse("Movie not found in database"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonConverter.wrapError("Movie not found in database"), HttpStatus.BAD_REQUEST);
         } else {
             String json = jsonConverter.toJson(movie);
             return new ResponseEntity<>(json, HttpStatus.OK);
