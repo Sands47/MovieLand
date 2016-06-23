@@ -39,13 +39,17 @@ public class MovieController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> addMovie(@RequestHeader("token") String token, @RequestBody String json) {
-        UserToken userToken = securityService.validateToken(token);
-        if (userToken.getUser().getRole() != UserRole.ADMIN) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse("Only admins can add movies"), HttpStatus.UNAUTHORIZED);
+        try {
+            UserToken userToken = securityService.validateToken(token);
+            if (userToken.getUser().getRole() != UserRole.ADMIN) {
+                return new ResponseEntity<>(jsonConverter.wrapResponse("Only admins can add movies"), HttpStatus.UNAUTHORIZED);
+            }
+            Movie movie = jsonConverter.parseMovie(json);
+            movieService.add(movie);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (SecurityException e) {
+            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
         }
-        Movie movie = jsonConverter.parseMovie(json);
-        movieService.add(movie);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")

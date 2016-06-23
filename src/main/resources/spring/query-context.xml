@@ -117,4 +117,10 @@
         <constructor-arg value="INSERT INTO movie_country(movie_id, country_id)
         VALUES (?, ?);"/>
     </bean>
+
+    <bean id="updateMovieSQL" class="java.lang.String">
+        <constructor-arg value="UPDATE movie
+        SET name = ?, name_original = ?, release_year = ?, description = ?, price = ?
+        WHERE id = ?;"/>
+    </bean>
 </beans>
