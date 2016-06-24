@@ -29,7 +29,7 @@ public class ReviewController {
     public ResponseEntity<String> addReview(@RequestBody String json, HttpServletRequest request) {
         Review review = jsonConverter.parseReview(json);
         User authorizedUser = (User) request.getAttribute("authorizedUser");
-        if (!authorizedUser.getId().equals(review.getUser().getId())) {
+        if (!authorizedUser.equals(review.getUser())) {
             return new ResponseEntity<>(jsonConverter.wrapError("You can only add reviews for your own user"), HttpStatus.UNAUTHORIZED);
         }
         if (reviewService.add(review)) {
@@ -45,7 +45,7 @@ public class ReviewController {
     public ResponseEntity<String> deleteReview(@RequestBody String json, HttpServletRequest request) {
         Review review = jsonConverter.parseReview(json);
         User authorizedUser = (User) request.getAttribute("authorizedUser");
-        if (!authorizedUser.getId().equals(review.getUser().getId()) && authorizedUser.getRole() != UserRole.ADMIN) {
+        if (!authorizedUser.equals(review.getUser()) && authorizedUser.getRole() != UserRole.ADMIN) {
             return new ResponseEntity<>(jsonConverter.wrapError("You can only delete reviews for your own user"), HttpStatus.UNAUTHORIZED);
         }
         if (reviewService.delete(review)) {

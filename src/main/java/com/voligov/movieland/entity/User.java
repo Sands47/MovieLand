@@ -76,7 +76,7 @@ public class User {
             return false;
         }
         User user = (User) obj;
-        return id.equals(user.getId()) && firstName.equals(user.getFirstName()) && lastName.equals(user.getLastName());
+        return id.equals(user.getId());
     }
 
     @Override
