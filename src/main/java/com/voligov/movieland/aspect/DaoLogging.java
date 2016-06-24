@@ -1,6 +1,5 @@
 package com.voligov.movieland.aspect;
 
-import com.voligov.movieland.dao.MovieDao;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -10,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
-public class MovieDaoLogging {
-    private final Logger log = LoggerFactory.getLogger(MovieDao.class);
+public class DaoLogging {
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Around("execution(* com.voligov.movieland.dao.MovieDao.*(..))")
+    @Around("execution(* com.voligov.movieland.dao.*.*(..))")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         log.info("Started query to database from method {} of {}", joinPoint.getSignature().getName(), joinPoint.getSourceLocation().getWithinType());
         long startTime = System.currentTimeMillis();
