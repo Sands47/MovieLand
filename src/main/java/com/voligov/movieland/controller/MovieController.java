@@ -41,6 +41,15 @@ public class MovieController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @RoleRequired(role = UserRole.ADMIN)
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> editMovie(@RequestBody String json) {
+        Movie movie = jsonConverter.parseMovie(json);
+        movieService.edit(movie);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> getMovieById(@PathVariable int movieId) {

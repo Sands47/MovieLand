@@ -33,6 +33,9 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getMovieIdSQL;
 
+    @Autowired
+    private String updateMovieSQL;
+
     private final QueryBuilder queryBuilder = new QueryBuilder();
 
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
@@ -66,6 +69,12 @@ public class JdbcMovieDao implements MovieDao {
         Integer movieId = jdbcTemplate.queryForObject(getMovieIdSQL, Integer.class, movie.getName(), movie.getNameOriginal());
         log.info("Movie {} added to database. Id {} generated", movie, movieId);
         movie.setId(movieId);
+    }
 
+    @Override
+    public void edit(Movie movie) {
+        jdbcTemplate.update(updateMovieSQL, movie.getName(), movie.getNameOriginal(), movie.getReleaseYear(),
+                movie.getDescription(), movie.getPrice(), movie.getId());
+        log.info("Movie {} updated in database", movie.getId());
     }
 }

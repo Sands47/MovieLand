@@ -22,6 +22,12 @@ public class JdbcCountryDao implements CountryDao {
     @Autowired
     private String addMovieCountrySQL;
 
+    @Autowired
+    private String getCountriesByMovieSQL;
+
+    @Autowired
+    private String deleteCountryForMovieSQL;
+
     private final CountryRowMapper countryRowMapper = new CountryRowMapper();
 
     @Override
@@ -33,6 +39,21 @@ public class JdbcCountryDao implements CountryDao {
     public void addCountriesForMovie(Movie movie) {
         for (Country country : movie.getCountries()) {
             jdbcTemplate.update(addMovieCountrySQL, movie.getId(), country.getId());
+        }
+    }
+
+    @Override
+    public void updateCountriesForMovie(Movie movie) {
+        List<Country> countries = jdbcTemplate.query(getCountriesByMovieSQL, countryRowMapper);
+        for (Country country : movie.getCountries()) {
+            if (!countries.contains(country)) {
+                jdbcTemplate.update(addMovieCountrySQL, movie.getId(), country.getId());
+            }
+        }
+        for (Country country : countries) {
+            if (!movie.getCountries().contains(country)) {
+                jdbcTemplate.update(deleteCountryForMovieSQL, movie.getId(), country.getId());
+            }
         }
     }
 }

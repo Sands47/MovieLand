@@ -65,9 +65,31 @@
         FROM genre;"/>
     </bean>
 
+    <bean id="getGenresByMovieSQL" class="java.lang.String">
+        <constructor-arg value="SELECT genre_id
+        FROM movie_genre
+        where movie_id = ?;"/>
+    </bean>
+
+    <bean id="deleteGenreForMovieSQL" class="java.lang.String">
+        <constructor-arg value="DELETE FROM movie_genre
+        WHERE movie_id = ? AND genre_id = ?;"/>
+    </bean>
+
     <bean id="getCountriesSQL" class="java.lang.String">
         <constructor-arg value="SELECT id, name
         FROM country;"/>
+    </bean>
+
+    <bean id="getCountriesByMovieSQL" class="java.lang.String">
+        <constructor-arg value="SELECT country_id
+        FROM movie_country
+        where movie_id = ?;"/>
+    </bean>
+
+    <bean id="deleteCountryForMovieSQL" class="java.lang.String">
+        <constructor-arg value="DELETE FROM movie_country
+        WHERE movie_id = ? AND country_id = ?;"/>
     </bean>
 
     <bean id="getRatingSQL" class="java.lang.String">

@@ -25,6 +25,12 @@ public class JdbcGenreDao implements GenreDao {
     @Autowired
     private String addMovieGenreSQL;
 
+    @Autowired
+    private String getGenresByMovieSQL;
+
+    @Autowired
+    private String deleteGenreForMovieSQL;
+
     private final GenreRowMapper genreRowMapper = new GenreRowMapper();
 
     @Override
@@ -36,6 +42,21 @@ public class JdbcGenreDao implements GenreDao {
     public void addGenresForMovie(Movie movie) {
         for (Genre genre : movie.getGenres()) {
             jdbcTemplate.update(addMovieGenreSQL, movie.getId(), genre.getId());
+        }
+    }
+
+    @Override
+    public void updateGenresForMovie(Movie movie) {
+        List<Genre> genres = jdbcTemplate.query(getGenresByMovieSQL, genreRowMapper);
+        for (Genre genre : movie.getGenres()) {
+            if (!genres.contains(genre)) {
+                jdbcTemplate.update(addMovieGenreSQL, movie.getId(), genre.getId());
+            }
+        }
+        for (Genre genre : genres) {
+            if (!movie.getGenres().contains(genre)) {
+                jdbcTemplate.update(deleteGenreForMovieSQL, movie.getId(), genre.getId());
+            }
         }
     }
 }

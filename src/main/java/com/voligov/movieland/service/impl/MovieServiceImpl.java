@@ -104,6 +104,13 @@ public class MovieServiceImpl implements MovieService {
         countryService.addCountriesForMovie(movie);
     }
 
+    @Override
+    public void edit(Movie movie) {
+        movieDao.edit(movie);
+        genreService.updateGenresForMovie(movie);
+        countryService.updateCountriesForMovie(movie);
+    }
+
     private void getGenres(Movie movie) {
         if (movie.getGenres() != null) {
             for (Genre genre : movie.getGenres()) {
