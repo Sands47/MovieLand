@@ -6,9 +6,9 @@ import com.voligov.movieland.entity.Rating;
 import java.util.List;
 
 public interface RatingService {
-    boolean add(Rating rating);
+    void add(Rating rating);
 
     List<Rating> getRatingsForMovie(Movie movie);
 
-    void updateRating(Movie movie, Double averageRating);
+    void updateRating(Integer movieId, Double averageRating);
 }

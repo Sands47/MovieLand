@@ -8,9 +8,9 @@ import java.util.List;
 public interface RatingDao {
     void add(Rating rating);
 
-    //void updateAverage(Movie movie);
+    void update(Rating rating);
 
     List<Rating> get(Movie movie);
 
-    void updateAverage(Movie movie, Double averageRating);
+    void updateAverage(Integer movieId, Double averageRating);
 }

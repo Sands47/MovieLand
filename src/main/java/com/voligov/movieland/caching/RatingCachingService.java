@@ -1,6 +1,5 @@
 package com.voligov.movieland.caching;
 
-import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.entity.Rating;
 import com.voligov.movieland.service.RatingService;
 import org.slf4j.Logger;
@@ -27,21 +26,21 @@ public class RatingCachingService {
     private final Lock readLock = readWriteLock.readLock();
     private final Lock writeLock = readWriteLock.writeLock();
 
-    private Map<Movie, List<Rating>> ratings = new HashMap<>();
+    private Map<Integer, List<Rating>> ratings = new HashMap<>();
 
     public boolean addToCache(Rating rating) {
         List<Rating> ratingList;
         try {
             readLock.lock();
-            ratingList = ratings.get(rating.getMovie());
+            ratingList = ratings.get(rating.getMovie().getId());
             if (ratingList == null) {
                 try {
                     readLock.unlock();
                     writeLock.lock();
-                    ratingList = ratings.get(rating.getMovie());
+                    ratingList = ratings.get(rating.getMovie().getId());
                     if (ratingList == null) {
                         ratingList = ratingService.getRatingsForMovie(rating.getMovie());
-                        ratings.put(rating.getMovie(), ratingList);
+                        ratings.put(rating.getMovie().getId(), ratingList);
                     }
                 } finally {
                     writeLock.unlock();
@@ -50,8 +49,9 @@ public class RatingCachingService {
             }
             int index = ratingList.indexOf(rating);
             if (index != -1) {
-                log.info("Rating for movie Id = {} by user Id = {} already exists",
+                log.info("Rating for movie Id = {} by user Id = {} exists",
                         rating.getMovie().getId(), rating.getUser().getId());
+                ratingList.set(index, rating);
                 return false;
             }
         } finally {
@@ -72,11 +72,11 @@ public class RatingCachingService {
     public void flushToDb() {
         try {
             writeLock.lock();
-            for (Map.Entry<Movie, List<Rating>> movieListEntry : ratings.entrySet()) {
+            for (Map.Entry<Integer, List<Rating>> movieListEntry : ratings.entrySet()) {
                 Double averageRating = calculateAverage(movieListEntry.getValue());
                 ratingService.updateRating(movieListEntry.getKey(), averageRating);
                 log.info("Rating for movie Id = {} updated to {} in database",
-                        movieListEntry.getKey().getId(), averageRating);
+                        movieListEntry.getKey(), averageRating);
             }
             ratings.clear();
         } finally {

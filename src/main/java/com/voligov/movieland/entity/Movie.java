@@ -105,18 +105,6 @@ public class Movie {
     }
 
     @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (nameOriginal != null ? nameOriginal.hashCode() : 0);
-        result = 31 * result + (releaseYear != null ? releaseYear.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (rating != null ? rating.hashCode() : 0);
-        result = 31 * result + (price != null ? price.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "Movie{" +
                 "id=" + id +

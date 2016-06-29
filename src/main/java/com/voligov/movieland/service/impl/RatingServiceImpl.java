@@ -20,12 +20,12 @@ public class RatingServiceImpl implements RatingService {
     private RatingCachingService ratingCachingService;
 
     @Override
-    public boolean add(Rating rating) {
+    public void add(Rating rating) {
         if (ratingCachingService.addToCache(rating)) {
             ratingDao.add(rating);
-            return true;
+        } else {
+            ratingDao.update(rating);
         }
-        return false;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public void updateRating(Movie movie, Double averageRating) {
-        ratingDao.updateAverage(movie, averageRating);
+    public void updateRating(Integer movieId, Double averageRating) {
+        ratingDao.updateAverage(movieId, averageRating);
     }
 }
