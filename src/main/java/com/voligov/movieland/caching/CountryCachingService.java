@@ -22,7 +22,7 @@ public class CountryCachingService {
     public Country getById(int id) {
         for (Country country : countryCache) {
             if (country.getId() == id) {
-                return country;
+                return copy(country);
             }
         }
         log.warn("Country with id = {} not found in cache", id);
@@ -32,7 +32,7 @@ public class CountryCachingService {
     public Country getByName(String name) {
         for (Country country : countryCache) {
             if (country.getName().equals(name)) {
-                return country;
+                return copy(country);
             }
         }
         log.warn("Country with name = {} not found in cache", name);
@@ -51,5 +51,12 @@ public class CountryCachingService {
                 }
             }
         }
+    }
+
+    private Country copy(Country country) {
+        Country countryCopy = new Country();
+        countryCopy.setId(country.getId());
+        countryCopy.setName(country.getName());
+        return countryCopy;
     }
 }

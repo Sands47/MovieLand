@@ -23,7 +23,7 @@ public class GenreCachingService {
     public Genre getById(int id) {
         for (Genre genre : genreCache) {
             if (genre.getId() == id) {
-                return genre;
+                return copy(genre);
             }
         }
         log.warn("Genre with id = {} not found in cache", id);
@@ -33,7 +33,7 @@ public class GenreCachingService {
     public Genre getByName(String name) {
         for (Genre genre : genreCache) {
             if (genre.getName().equals(name)) {
-                return genre;
+                return copy(genre);
             }
         }
         log.warn("Genre with name = {} not found in cache", name);
@@ -52,5 +52,12 @@ public class GenreCachingService {
                 }
             }
         }
+    }
+
+    private Genre copy(Genre genre) {
+        Genre genreCopy = new Genre();
+        genreCopy.setId(genre.getId());
+        genreCopy.setName(genre.getName());
+        return genreCopy;
     }
 }

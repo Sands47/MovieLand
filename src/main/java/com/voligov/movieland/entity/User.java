@@ -11,7 +11,6 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private UUID token;
     private UserRole role;
 
     public Integer getId() {
@@ -54,14 +53,6 @@ public class User {
         this.password = password;
     }
 
-    public UUID getToken() {
-        return token;
-    }
-
-    public void setToken(UUID token) {
-        this.token = token;
-    }
-
     public UserRole getRole() {
         return role;
     }
@@ -86,7 +77,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", token=" + token +
                 ", role=" + role +
                 '}';
     }
