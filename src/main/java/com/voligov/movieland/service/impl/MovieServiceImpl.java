@@ -8,11 +8,11 @@ import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.service.CountryService;
 import com.voligov.movieland.service.GenreService;
+import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.service.ReviewService;
-import com.voligov.movieland.util.MovieComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,14 +42,14 @@ public class MovieServiceImpl implements MovieService {
 
     private static Random random = new Random();
 
-    public List<Movie> getAll(String ratingOrder, String priceOrder) {
-        List<Movie> movies = movieDao.getAll();
+    @Override
+    public List<Movie> getAll(String ratingOrder, String priceOrder, String page) {
+        List<Movie> movies = movieDao.getAll(Integer.valueOf(page),
+                SortingOrder.getBySortString(ratingOrder),
+                SortingOrder.getBySortString(priceOrder));
         for (Movie movie : movies) {
             getGenres(movie);
             getCountries(movie);
-        }
-        if (ratingOrder != null || priceOrder != null) {
-            movies.sort(new MovieComparator(ratingOrder, priceOrder));
         }
         return movies;
     }

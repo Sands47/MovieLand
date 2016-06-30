@@ -44,7 +44,7 @@ public class JdbcCountryDao implements CountryDao {
 
     @Override
     public void updateCountriesForMovie(Movie movie) {
-        List<Country> countries = jdbcTemplate.query(getCountriesByMovieSQL, countryRowMapper);
+        List<Country> countries = jdbcTemplate.query(getCountriesByMovieSQL, countryRowMapper, movie.getId());
         for (Country country : movie.getCountries()) {
             if (!countries.contains(country)) {
                 jdbcTemplate.update(addMovieCountrySQL, movie.getId(), country.getId());

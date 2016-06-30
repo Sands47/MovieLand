@@ -66,7 +66,7 @@
     </bean>
 
     <bean id="getGenresByMovieSQL" class="java.lang.String">
-        <constructor-arg value="SELECT genre_id
+        <constructor-arg value="SELECT genre_id AS id
         FROM movie_genre
         where movie_id = ?;"/>
     </bean>
@@ -82,7 +82,7 @@
     </bean>
 
     <bean id="getCountriesByMovieSQL" class="java.lang.String">
-        <constructor-arg value="SELECT country_id
+        <constructor-arg value="SELECT country_id AS id
         FROM movie_country
         where movie_id = ?;"/>
     </bean>

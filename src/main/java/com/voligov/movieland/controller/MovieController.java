@@ -26,8 +26,9 @@ public class MovieController {
     @RequestMapping(produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
-                                               @RequestParam(value = "price", required = false) String priceOrder) {
-        List<Movie> movies = movieService.getAll(ratingOrder, priceOrder);
+                                               @RequestParam(value = "price", required = false) String priceOrder,
+                                               @RequestParam(value = "page", defaultValue = "1") String page) {
+        List<Movie> movies = movieService.getAll(ratingOrder, priceOrder, page);
         String json = jsonConverter.toJson(movies);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }

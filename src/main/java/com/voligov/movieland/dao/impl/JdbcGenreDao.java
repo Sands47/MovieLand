@@ -47,7 +47,7 @@ public class JdbcGenreDao implements GenreDao {
 
     @Override
     public void updateGenresForMovie(Movie movie) {
-        List<Genre> genres = jdbcTemplate.query(getGenresByMovieSQL, genreRowMapper);
+        List<Genre> genres = jdbcTemplate.query(getGenresByMovieSQL, genreRowMapper, movie.getId());
         for (Genre genre : movie.getGenres()) {
             if (!genres.contains(genre)) {
                 jdbcTemplate.update(addMovieGenreSQL, movie.getId(), genre.getId());

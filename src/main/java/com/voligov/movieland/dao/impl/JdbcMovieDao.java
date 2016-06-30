@@ -3,6 +3,7 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.util.QueryBuilder;
 import org.slf4j.Logger;
@@ -41,8 +42,9 @@ public class JdbcMovieDao implements MovieDao {
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
 
     @Override
-    public List<Movie> getAll() {
-        return jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
+    public List<Movie> getAll(int page, SortingOrder ratingOrder, SortingOrder priceOrder) {
+        String query = queryBuilder.buildPagedQuery(page, ratingOrder, priceOrder, getAllMoviesSQL);
+        return jdbcTemplate.query(query, movieRowMapper);
     }
 
     @Override
@@ -59,7 +61,8 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public List<Movie> search(MovieSearchParams searchParams) {
-        return jdbcTemplate.query(queryBuilder.buildSearchQuery(searchParams, getAllMoviesSQL), movieRowMapper);
+        String query = queryBuilder.buildSearchQuery(searchParams, getAllMoviesSQL);
+        return jdbcTemplate.query(query, movieRowMapper);
     }
 
     @Override

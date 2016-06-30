@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MovieService {
 
-    List<Movie> getAll(String ratingOrder, String priceOrder);
+    List<Movie> getAll(String ratingOrder, String priceOrder, String page);
 
     Movie getById(int id);
 
