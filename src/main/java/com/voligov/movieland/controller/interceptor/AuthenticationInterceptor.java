@@ -11,6 +11,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
@@ -24,16 +25,33 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
         MDC.put(Constant.REQUEST_ID, UUID.randomUUID().toString());
         String user = Constant.GUEST;
+        String token = null;
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(Constant.TOKEN)) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        if (token == null) {
+            token = httpServletRequest.getHeader(Constant.TOKEN);
+        }
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
-            RoleRequired roleRequired = handlerMethod.getMethodAnnotation(RoleRequired.class);
-            if (roleRequired != null) {
-                String token = httpServletRequest.getHeader(Constant.TOKEN);
-                UserToken userToken = securityService.validateToken(token);
+            RoleRequired roleRequiredAnnotation = handlerMethod.getMethodAnnotation(RoleRequired.class);
+            UserRole roleRequired;
+            if (roleRequiredAnnotation != null) {
+                roleRequired = roleRequiredAnnotation.role();
+            } else {
+                roleRequired = UserRole.GUEST;
+            }
+            UserToken userToken = securityService.validateToken(token, roleRequired);
+            if (userToken != null) {
                 user = userToken.getUser().getEmail();
-                UserRole requiredRole = roleRequired.role();
-                if (!userToken.getUser().getRole().equalOrHigher(requiredRole)) {
-                    throw new SecurityException("Role required: " + requiredRole);
+                if (!userToken.getUser().getRole().equalOrHigher(roleRequired)) {
+                    throw new SecurityException("Role required: " + roleRequired);
                 } else {
                     httpServletRequest.setAttribute(Constant.AUTHORIZED_USER, userToken.getUser());
                 }

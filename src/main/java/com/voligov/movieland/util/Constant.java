@@ -35,4 +35,5 @@ public class Constant {
     public static final String ID = "id";
     public static final String MOVIE_ID = "movie_id";
     public static final String USER_ID = "user_id";
+    public static final String V1_PATH = "/v1/";
 }

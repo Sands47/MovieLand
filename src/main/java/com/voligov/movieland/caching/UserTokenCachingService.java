@@ -53,7 +53,7 @@ public class UserTokenCachingService {
                 }
             }
             log.warn("Token for value = {} not found in cache", tokenValue);
-            throw new SecurityException("Token is not registered");
+            return null;
         } finally {
             readLock.unlock();
         }

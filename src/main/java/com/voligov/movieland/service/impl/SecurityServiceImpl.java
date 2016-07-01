@@ -5,6 +5,7 @@ import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserCredentials;
 import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.SecurityService;
+import com.voligov.movieland.util.enums.UserRole;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public UserToken validateToken(String token) {
-        return userTokenCachingService.getByTokenString(token);
+    public UserToken validateToken(String token, UserRole roleRequired) {
+        UserToken userToken = userTokenCachingService.getByTokenString(token);
+        if (roleRequired != UserRole.GUEST && userToken == null) {
+            throw new SecurityException("Token is not registered");
+        }
+        return userToken;
     }
 
     @Override
