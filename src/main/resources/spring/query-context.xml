@@ -61,6 +61,11 @@
         WHERE id = ?;"/>
     </bean>
 
+    <bean id="deleteReviewsForMoviesSQL" class="java.lang.String">
+        <constructor-arg value="DELETE FROM review
+        WHERE movie_id IN (?);"/>
+    </bean>
+
     <bean id="checkReviewExistsSQL" class="java.lang.String">
         <constructor-arg value="SELECT COUNT(*) FROM review
         WHERE movie_id = ? AND user_id = ?;"/>

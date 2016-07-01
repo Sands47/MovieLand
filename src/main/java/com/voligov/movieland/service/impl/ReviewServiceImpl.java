@@ -41,4 +41,9 @@ public class ReviewServiceImpl implements ReviewService {
         return userService.getUserByReviewId(review.getId());
     }
 
+    @Override
+    public void deleteReviewsForMovies(String movies) {
+        reviewDao.deleteReviewsForMovies(movies);
+    }
+
 }

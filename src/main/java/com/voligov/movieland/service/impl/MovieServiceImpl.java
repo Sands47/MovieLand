@@ -172,6 +172,7 @@ public class MovieServiceImpl implements MovieService {
             moviesForDeletion.delete(moviesForDeletion.length() - 1, moviesForDeletion.length());
             genreService.deleteGenresForMovies(moviesForDeletion.toString());
             countryService.deleteCountriesForMovies(moviesForDeletion.toString());
+            reviewService.deleteReviewsForMovies(moviesForDeletion.toString());
             movieDao.deleteMovies(moviesForDeletion.toString());
             log.info("Marked movies deleted, count = {}", markedMovies.size());
             markedMovies.clear();

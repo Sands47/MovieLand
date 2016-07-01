@@ -30,6 +30,9 @@ public class JdbcReviewDao implements ReviewDao {
     @Autowired
     private String checkReviewExistsSQL;
 
+    @Autowired
+    private String deleteReviewsForMoviesSQL;
+
     private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
 
     @Override
@@ -54,5 +57,10 @@ public class JdbcReviewDao implements ReviewDao {
     public void delete(Review review) {
         jdbcTemplate.update(deleteReviewSQL, review.getId());
         log.info("Review {} deleted from database", review);
+    }
+
+    @Override
+    public void deleteReviewsForMovies(String movies) {
+        jdbcTemplate.update(deleteReviewsForMoviesSQL, movies);
     }
 }
