@@ -33,4 +33,9 @@ public class CountryServiceImpl implements CountryService {
             countryDao.updateCountriesForMovie(movie);
         }
     }
+
+    @Override
+    public Country getById(Integer id) {
+        return countryDao.getById(id);
+    }
 }

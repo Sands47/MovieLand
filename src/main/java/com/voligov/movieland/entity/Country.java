@@ -26,10 +26,7 @@ public class Country {
             return false;
         }
         Country country = (Country) obj;
-        if (name == null) {
-            return country.getId().equals(id);
-        }
-        return country.getId().equals(id) && country.getName().equals(name);
+        return country.getId().equals(id);
     }
 
     @Override

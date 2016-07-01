@@ -7,6 +7,7 @@ import com.voligov.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,13 +15,14 @@ import java.util.List;
 
 @Repository
 public class JdbcGenreDao implements GenreDao {
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private String getGenresSQL;
+
+    @Autowired
+    private String getGenreByIdSQL;
 
     @Autowired
     private String addMovieGenreSQL;
@@ -58,5 +60,16 @@ public class JdbcGenreDao implements GenreDao {
                 jdbcTemplate.update(deleteGenreForMovieSQL, movie.getId(), genre.getId());
             }
         }
+    }
+
+    @Override
+    public Genre getById(Integer id) {
+        Genre genre;
+        try {
+            genre = jdbcTemplate.queryForObject(getGenreByIdSQL, genreRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return genre;
     }
 }

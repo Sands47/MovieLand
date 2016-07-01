@@ -47,8 +47,21 @@ public class GenreCachingService {
             genreCache.addAll(genresFromDb);
         } else {
             for (Genre genre : genresFromDb) {
-                if (!genreCache.contains(genre)) {
+                int genreIndex = genreCache.indexOf(genre);
+                if (genreIndex == -1) {
                     genreCache.add(genre);
+                } else {
+                    Genre genreInCache = genreCache.get(genreIndex);
+                    if (!genreInCache.getName().equals(genre.getName())) {
+                        genreCache.remove(genreIndex);
+                        genreCache.add(genre);
+                    }
+                }
+            }
+            for (Genre genre : genreCache) {
+                int genreIndex = genresFromDb.indexOf(genre);
+                if (genreIndex == -1) {
+                    genreCache.remove(genreIndex);
                 }
             }
         }

@@ -79,6 +79,12 @@
         FROM genre;"/>
     </bean>
 
+    <bean id="getGenreByIdSQL" class="java.lang.String">
+        <constructor-arg value="SELECT id, name
+        FROM genre
+        WHERE id = ?;"/>
+    </bean>
+
     <bean id="getGenresByMovieSQL" class="java.lang.String">
         <constructor-arg value="SELECT genre_id AS id
         FROM movie_genre
@@ -93,6 +99,12 @@
     <bean id="getCountriesSQL" class="java.lang.String">
         <constructor-arg value="SELECT id, name
         FROM country;"/>
+    </bean>
+
+    <bean id="getCountryByIdSQL" class="java.lang.String">
+        <constructor-arg value="SELECT id, name
+        FROM country
+        WHERE id = ?;"/>
     </bean>
 
     <bean id="getCountriesByMovieSQL" class="java.lang.String">

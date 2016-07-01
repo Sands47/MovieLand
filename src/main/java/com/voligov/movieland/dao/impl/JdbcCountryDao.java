@@ -5,6 +5,7 @@ import com.voligov.movieland.dao.impl.mapper.CountryRowMapper;
 import com.voligov.movieland.entity.Country;
 import com.voligov.movieland.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,12 +13,14 @@ import java.util.List;
 
 @Repository
 public class JdbcCountryDao implements CountryDao {
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private String getCountriesSQL;
+
+    @Autowired
+    private String getCountryByIdSQL;
 
     @Autowired
     private String addMovieCountrySQL;
@@ -55,5 +58,16 @@ public class JdbcCountryDao implements CountryDao {
                 jdbcTemplate.update(deleteCountryForMovieSQL, movie.getId(), country.getId());
             }
         }
+    }
+
+    @Override
+    public Country getById(Integer id) {
+        Country country;
+        try {
+            country = jdbcTemplate.queryForObject(getCountryByIdSQL, countryRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return country;
     }
 }

@@ -11,4 +11,6 @@ public interface CountryService {
     void addCountriesForMovie(Movie movie);
 
     void updateCountriesForMovie(Movie movie);
+
+    Country getById(Integer id);
 }

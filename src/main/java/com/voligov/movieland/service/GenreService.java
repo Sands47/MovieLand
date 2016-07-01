@@ -11,4 +11,6 @@ public interface GenreService {
     void addGenresForMovie(Movie movie);
 
     void updateGenresForMovie(Movie movie);
+
+    Genre getById(Integer id);
 }

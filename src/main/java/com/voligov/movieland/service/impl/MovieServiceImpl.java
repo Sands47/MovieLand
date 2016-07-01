@@ -40,7 +40,7 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private CountryCachingService countryCachingService;
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     @Override
     public List<Movie> getAll(String ratingOrder, String priceOrder, String page) {
@@ -48,8 +48,8 @@ public class MovieServiceImpl implements MovieService {
                 SortingOrder.getBySortString(ratingOrder),
                 SortingOrder.getBySortString(priceOrder));
         for (Movie movie : movies) {
-            getGenres(movie);
-            getCountries(movie);
+            enrichGenres(movie);
+            encrichCountries(movie);
         }
         return movies;
     }
@@ -58,8 +58,8 @@ public class MovieServiceImpl implements MovieService {
     public Movie getById(int id) {
         Movie movie = movieDao.getById(id);
         if (movie != null) {
-            getGenres(movie);
-            getCountries(movie);
+            enrichGenres(movie);
+            encrichCountries(movie);
             List<Review> reviews = reviewService.getByMovieId(id);
             movie.setReviews(reviews);
             if (movie.getReviews().size() > 2) {
@@ -91,8 +91,8 @@ public class MovieServiceImpl implements MovieService {
         }
         List<Movie> movies = movieDao.search(searchParams);
         for (Movie movie : movies) {
-            getGenres(movie);
-            getCountries(movie);
+            enrichGenres(movie);
+            encrichCountries(movie);
         }
         return movies;
     }
@@ -111,18 +111,30 @@ public class MovieServiceImpl implements MovieService {
         countryService.updateCountriesForMovie(movie);
     }
 
-    private void getGenres(Movie movie) {
+    private void enrichGenres(Movie movie) {
         if (movie.getGenres() != null) {
             for (Genre genre : movie.getGenres()) {
-                genre.setName(genreCachingService.getById(genre.getId()).getName());
+                Genre cachedGenre = genreCachingService.getById(genre.getId());
+                if (cachedGenre != null) {
+                    genre.setName(cachedGenre.getName());
+                } else {
+                    Genre genreFromDb = genreService.getById(genre.getId());
+                    genre.setName(genreFromDb.getName());
+                }
             }
         }
     }
 
-    private void getCountries(Movie movie) {
+    private void encrichCountries(Movie movie) {
         if (movie.getCountries() != null) {
             for (Country country : movie.getCountries()) {
-                country.setName(countryCachingService.getById(country.getId()).getName());
+                Country cachedCountry = countryCachingService.getById(country.getId());
+                if (cachedCountry != null) {
+                    country.setName(cachedCountry.getName());
+                } else {
+                    Country countryFromDb = countryService.getById(country.getId());
+                    country.setName(countryFromDb.getName());
+                }
             }
         }
     }

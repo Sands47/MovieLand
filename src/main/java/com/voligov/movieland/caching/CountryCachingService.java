@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -46,8 +47,21 @@ public class CountryCachingService {
             countryCache.addAll(countriesFromDb);
         } else {
             for (Country country : countriesFromDb) {
-                if (!countryCache.contains(country)) {
+                int countryIndex = countryCache.indexOf(country);
+                if (countryIndex == -1) {
                     countryCache.add(country);
+                } else {
+                    Country countryInCache = countryCache.get(countryIndex);
+                    if (!countryInCache.getName().equals(country.getName())) {
+                        countryCache.remove(countryIndex);
+                        countryCache.add(country);
+                    }
+                }
+            }
+            for (Country country : countryCache) {
+                int countryIndex = countriesFromDb.indexOf(country);
+                if (countryIndex == -1) {
+                    countryCache.remove(countryIndex);
                 }
             }
         }
