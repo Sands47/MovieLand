@@ -2,6 +2,8 @@ package com.voligov.movieland.controller;
 
 import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.GetMoviesRequestParams;
+import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.enums.UserRole;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
@@ -28,7 +30,11 @@ public class MovieController {
     public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
                                                @RequestParam(value = "price", required = false) String priceOrder,
                                                @RequestParam(value = "page", defaultValue = "1") String page) {
-        List<Movie> movies = movieService.getAll(ratingOrder, priceOrder, page);
+        GetMoviesRequestParams params = new GetMoviesRequestParams();
+        params.setRatingOrder(SortingOrder.getBySortString(ratingOrder));
+        params.setPriceOrder(SortingOrder.getBySortString(priceOrder));
+        params.setPage(Integer.valueOf(page));
+        List<Movie> movies = movieService.getAll(params);
         String json = jsonConverter.toJson(movies);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }

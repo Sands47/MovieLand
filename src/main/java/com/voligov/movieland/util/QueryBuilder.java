@@ -1,6 +1,5 @@
 package com.voligov.movieland.util;
 
-import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 
 public class QueryBuilder {
@@ -23,21 +22,21 @@ public class QueryBuilder {
     private final String NAME_ORIGINAL_FIELD = "name_original";
     private final String RELEASE_YEAR_FIELD = "release_year";
 
-    public String buildPagedQuery(int page, SortingOrder ratingOrder, SortingOrder priceOrder, String getAllMoviesSQL) {
+    public String buildPagedQuery(GetMoviesRequestParams params, String getAllMoviesSQL) {
         StringBuilder builder = new StringBuilder(getAllMoviesSQL);
-        if ((ratingOrder != null) || (priceOrder != null)) {
+        if ((params.getRatingOrder() != null) || (params.getPriceOrder() != null)) {
             builder.append(ORDER_BY);
             builder.append(SPACE);
-            if (ratingOrder != null) {
+            if (params.getRatingOrder() != null) {
                 builder.append(RATING);
                 builder.append(SPACE);
-                builder.append(ratingOrder.getSortOrder());
+                builder.append(params.getRatingOrder().getSortOrder());
                 builder.append(COMMA);
             }
-            if (priceOrder != null) {
+            if (params.getPriceOrder() != null) {
                 builder.append(PRICE);
                 builder.append(SPACE);
-                builder.append(priceOrder.getSortOrder());
+                builder.append(params.getPriceOrder().getSortOrder());
                 builder.append(COMMA);
             }
             builder.delete(builder.length() - 1, builder.length());
@@ -45,7 +44,7 @@ public class QueryBuilder {
         }
         builder.append(LIMIT);
         builder.append(SPACE);
-        builder.append(PAGE_SIZE * (page - 1));
+        builder.append(PAGE_SIZE * (params.getPage() - 1));
         builder.append(COMMA);
         builder.append(PAGE_SIZE);
         builder.append(SEMICOLON);

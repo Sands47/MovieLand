@@ -8,7 +8,7 @@ import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.service.CountryService;
 import com.voligov.movieland.service.GenreService;
-import com.voligov.movieland.util.enums.SortingOrder;
+import com.voligov.movieland.util.GetMoviesRequestParams;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.service.MovieService;
@@ -51,10 +51,8 @@ public class MovieServiceImpl implements MovieService {
     private List<Integer> markedMovies = new ArrayList<>();
 
     @Override
-    public List<Movie> getAll(String ratingOrder, String priceOrder, String page) {
-        List<Movie> movies = movieDao.getAll(Integer.valueOf(page),
-                SortingOrder.getBySortString(ratingOrder),
-                SortingOrder.getBySortString(priceOrder));
+    public List<Movie> getAll(GetMoviesRequestParams params) {
+        List<Movie> movies = movieDao.getAll(params);
         for (Movie movie : movies) {
             enrichGenres(movie);
             enrichCountries(movie);
