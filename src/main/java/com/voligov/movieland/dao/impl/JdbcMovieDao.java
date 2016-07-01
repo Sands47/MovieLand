@@ -3,6 +3,7 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.Constant;
 import com.voligov.movieland.util.GetMoviesRequestParams;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.util.QueryBuilder;
@@ -98,7 +99,7 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public void deleteMovies(List<Integer> movies) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("movieIds", movies);
+        parameters.addValue(Constant.MOVIE_IDS, movies);
         namedParameterJdbcTemplate.update(deleteMoviesSQL, parameters);
     }
 }

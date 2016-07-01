@@ -4,6 +4,7 @@ import com.voligov.movieland.dao.CountryDao;
 import com.voligov.movieland.dao.impl.mapper.CountryRowMapper;
 import com.voligov.movieland.entity.Country;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -82,7 +83,7 @@ public class JdbcCountryDao implements CountryDao {
     @Override
     public void deleteCountriesForMovies(List<Integer> movies) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("movieIds", movies);
+        parameters.addValue(Constant.MOVIE_IDS, movies);
         namedParameterJdbcTemplate.update(deleteCountriesForMoviesSQL, parameters);
     }
 }

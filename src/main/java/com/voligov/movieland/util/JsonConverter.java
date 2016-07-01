@@ -57,7 +57,7 @@ public class JsonConverter {
 
     public String wrapError(String errorMessage) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("error", errorMessage);
+        jsonObject.addProperty(Constant.ERROR, errorMessage);
         return gson.toJson(jsonObject);
     }
 
