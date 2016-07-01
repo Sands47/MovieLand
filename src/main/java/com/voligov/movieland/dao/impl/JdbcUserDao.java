@@ -21,15 +21,30 @@ public class JdbcUserDao implements UserDao {
     @Autowired
     private String getUserByEmailSQL;
 
+    @Autowired
+    private String getReviewAuthorSQL;
+
     private final UserRowMapper userRowMapper = new UserRowMapper();
 
     @Override
-    public User getUserByEmail(UserCredentials credentials) {
+    public User getUserByEmail(String email) {
         User user;
         try {
-            user = jdbcTemplate.queryForObject(getUserByEmailSQL, new Object[]{credentials.getLogin()}, userRowMapper);
+            user = jdbcTemplate.queryForObject(getUserByEmailSQL, userRowMapper, email);
         } catch (EmptyResultDataAccessException e) {
-            log.warn("User with email = {} not found in database", credentials.getLogin());
+            log.warn("User with email = {} not found in database", email);
+            return null;
+        }
+        return user;
+    }
+
+    @Override
+    public User getUserByReviewId(Integer reviewId) {
+        User user;
+        try {
+            user = jdbcTemplate.queryForObject(getReviewAuthorSQL, userRowMapper, reviewId);
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("Author of review = {} not found in database", reviewId);
             return null;
         }
         return user;

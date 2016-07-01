@@ -28,7 +28,7 @@ public class JdbcReviewDao implements ReviewDao {
     private String deleteReviewSQL;
 
     @Autowired
-    private String getReviewSQL;
+    private String checkReviewExistsSQL;
 
     private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
 
@@ -39,7 +39,7 @@ public class JdbcReviewDao implements ReviewDao {
 
     @Override
     public boolean add(Review review) {
-        Integer reviewCount = jdbcTemplate.queryForObject(getReviewSQL, Integer.class, review.getMovie().getId(), review.getUser().getId());
+        Integer reviewCount = jdbcTemplate.queryForObject(checkReviewExistsSQL, Integer.class, review.getMovie().getId(), review.getUser().getId());
         if (reviewCount == 0) {
             jdbcTemplate.update(addReviewSQL, review.getMovie().getId(), review.getUser().getId(), review.getText());
             log.info("Review {} added to database", review);
@@ -51,15 +51,8 @@ public class JdbcReviewDao implements ReviewDao {
     }
 
     @Override
-    public boolean delete(Review review) {
-        Integer reviewCount = jdbcTemplate.queryForObject(getReviewSQL, Integer.class, review.getMovie().getId(), review.getUser().getId());
-        if (reviewCount != 0) {
-            jdbcTemplate.update(deleteReviewSQL, review.getMovie().getId(), review.getUser().getId());
-            log.info("Review {} deleted from database", review);
-            return true;
-        } else {
-            log.info("Review by user {} for movie {} doesn't exists in the database", review.getUser().getId(), review.getMovie().getId());
-            return false;
-        }
+    public void delete(Review review) {
+        jdbcTemplate.update(deleteReviewSQL, review.getId());
+        log.info("Review {} deleted from database", review);
     }
 }

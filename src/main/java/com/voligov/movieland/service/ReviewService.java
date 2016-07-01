@@ -10,5 +10,7 @@ public interface ReviewService {
 
     boolean add(Review review);
 
-    boolean delete(Review review);
+    void delete(Review review);
+
+    User getAuthor(Review review);
 }

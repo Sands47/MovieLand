@@ -45,13 +45,15 @@ public class ReviewController {
     public ResponseEntity<String> deleteReview(@RequestBody String json, HttpServletRequest request) {
         Review review = jsonConverter.parseReview(json);
         User authorizedUser = (User) request.getAttribute("authorizedUser");
-        if (!authorizedUser.equals(review.getUser()) && authorizedUser.getRole() != UserRole.ADMIN) {
-            return new ResponseEntity<>(jsonConverter.wrapError("You can only delete reviews for your own user"), HttpStatus.UNAUTHORIZED);
+        if (authorizedUser.getRole() == UserRole.USER) {
+            User reviewAuthor = reviewService.getAuthor(review);
+            if (reviewAuthor == null) {
+                return new ResponseEntity<>(jsonConverter.wrapError("You don't have a review with such Id"), HttpStatus.BAD_REQUEST);
+            } else if (!authorizedUser.equals(reviewAuthor)) {
+                return new ResponseEntity<>(jsonConverter.wrapError("You can only delete reviews for your own user"), HttpStatus.UNAUTHORIZED);
+            }
         }
-        if (reviewService.delete(review)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(jsonConverter.wrapError("Review doesn't exist"), HttpStatus.BAD_REQUEST);
-        }
+        reviewService.delete(review);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

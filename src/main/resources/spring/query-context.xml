@@ -39,6 +39,12 @@
         WHERE t1.movie_id = ?;"/>
     </bean>
 
+    <bean id="getReviewByIdSQL" class="java.lang.String">
+        <constructor-arg value="SELECT t1.id, t1.movie_id, t1.user_id, t1.text
+        FROM review t1
+        WHERE t1.id = ?;"/>
+    </bean>
+
     <bean id="getUserByEmailSQL" class="java.lang.String">
         <constructor-arg value="SELECT id, first_name, last_name, email, password, role
         FROM user
@@ -52,12 +58,20 @@
 
     <bean id="deleteReviewSQL" class="java.lang.String">
         <constructor-arg value="DELETE FROM review
+        WHERE id = ?;"/>
+    </bean>
+
+    <bean id="checkReviewExistsSQL" class="java.lang.String">
+        <constructor-arg value="SELECT COUNT(*) FROM review
         WHERE movie_id = ? AND user_id = ?;"/>
     </bean>
 
-    <bean id="getReviewSQL" class="java.lang.String">
-        <constructor-arg value="SELECT COUNT(*) FROM review
-        WHERE movie_id = ? AND user_id = ?;"/>
+    <bean id="getReviewAuthorSQL" class="java.lang.String">
+        <constructor-arg value="SELECT t1.id, t1.first_name, t1.last_name, t1.email, t1.password, t1.role
+        FROM user t1
+        JOIN review t2
+        ON t1.id = t2.user_id
+        WHERE t2.id = ?;"/>
     </bean>
 
     <bean id="getGenresSQL" class="java.lang.String">

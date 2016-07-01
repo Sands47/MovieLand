@@ -14,7 +14,12 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public User getUser(UserCredentials credentials) {
-        return userDao.getUserByEmail(credentials);
+    public User getUser(String email) {
+        return userDao.getUserByEmail(email);
+    }
+
+    @Override
+    public User getUserByReviewId(Integer reviewId) {
+        return userDao.getUserByReviewId(reviewId);
     }
 }

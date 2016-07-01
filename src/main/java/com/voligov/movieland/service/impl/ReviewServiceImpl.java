@@ -6,6 +6,7 @@ import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.ReviewService;
 import com.voligov.movieland.service.SecurityService;
+import com.voligov.movieland.service.UserService;
 import com.voligov.movieland.util.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,11 @@ import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
-
     @Autowired
     private ReviewDao reviewDao;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public List<Review> getByMovieId(int movieId) {
@@ -29,7 +32,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public boolean delete(Review review) {
-        return reviewDao.delete(review);
+    public void delete(Review review) {
+        reviewDao.delete(review);
     }
+
+    @Override
+    public User getAuthor(Review review) {
+        return userService.getUserByReviewId(review.getId());
+    }
+
 }

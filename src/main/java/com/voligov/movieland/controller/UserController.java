@@ -33,7 +33,7 @@ public class UserController {
         if (credentials.isInvalid()) {
             return new ResponseEntity<>(jsonConverter.wrapError("User credentials are invalid"), HttpStatus.BAD_REQUEST);
         }
-        User user = userService.getUser(credentials);
+        User user = userService.getUser(credentials.getLogin());
         if (user == null || !securityService.validateUser(credentials, user)) {
             return new ResponseEntity<>(jsonConverter.wrapError("Login or password are invalid"), HttpStatus.BAD_REQUEST);
         }
