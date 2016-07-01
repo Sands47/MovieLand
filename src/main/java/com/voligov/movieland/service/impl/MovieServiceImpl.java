@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +106,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public void add(Movie movie) {
         movieDao.add(movie);
         genreService.addGenresForMovie(movie);
@@ -112,6 +114,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Transactional
     public void edit(Movie movie) {
         movieDao.edit(movie);
         genreService.updateGenresForMovie(movie);
@@ -161,6 +164,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Scheduled(cron = "0 1 1 * * ?")
+    @Transactional
     public synchronized void deleteMarkedMovies() {
         log.info("Deleting marked movies");
         if (!markedMovies.isEmpty()) {

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -72,9 +73,14 @@ public class JdbcMovieDao implements MovieDao {
     public void add(Movie movie) {
         jdbcTemplate.update(addMovieSQL, movie.getName(), movie.getNameOriginal(), movie.getReleaseYear(),
                 movie.getDescription(), movie.getPrice());
-        Integer movieId = jdbcTemplate.queryForObject(getMovieIdSQL, Integer.class, movie.getName(), movie.getNameOriginal());
-        log.info("Movie {} added to database. Id {} generated", movie, movieId);
-        movie.setId(movieId);
+        try {
+            Integer movieId = jdbcTemplate.queryForObject(getMovieIdSQL, Integer.class, movie.getName(), movie.getNameOriginal(), movie.getDescription());
+            log.info("Movie {} added to database. Id {} generated", movie, movieId);
+            movie.setId(movieId);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            log.info("Movie already exists in the database");
+            throw new RuntimeException("Movie already exists in the database");
+        }
     }
 
     @Override

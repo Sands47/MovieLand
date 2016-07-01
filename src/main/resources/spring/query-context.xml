@@ -168,7 +168,7 @@
 
     <bean id="getMovieIdSQL" class="java.lang.String">
         <constructor-arg value="SELECT id from movie
-        WHERE name = ? AND name_original = ?;"/>
+        WHERE name = ? AND name_original = ? and description = ?;"/>
     </bean>
 
     <bean id="addMovieGenreSQL" class="java.lang.String">
