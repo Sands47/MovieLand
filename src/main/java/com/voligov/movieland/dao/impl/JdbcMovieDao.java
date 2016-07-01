@@ -37,6 +37,9 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String updateMovieSQL;
 
+    @Autowired
+    private String deleteMoviesSQL;
+
     private final QueryBuilder queryBuilder = new QueryBuilder();
 
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
@@ -79,5 +82,10 @@ public class JdbcMovieDao implements MovieDao {
         jdbcTemplate.update(updateMovieSQL, movie.getName(), movie.getNameOriginal(), movie.getReleaseYear(),
                 movie.getDescription(), movie.getPrice(), movie.getId());
         log.info("Movie {} updated in database", movie.getId());
+    }
+
+    @Override
+    public void deleteMovies(String movies) {
+        jdbcTemplate.update(deleteMoviesSQL, movies);
     }
 }

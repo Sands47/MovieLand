@@ -31,6 +31,9 @@ public class JdbcCountryDao implements CountryDao {
     @Autowired
     private String deleteCountryForMovieSQL;
 
+    @Autowired
+    private String deleteCountriesForMoviesSQL;
+
     private final CountryRowMapper countryRowMapper = new CountryRowMapper();
 
     @Override
@@ -69,5 +72,10 @@ public class JdbcCountryDao implements CountryDao {
             return null;
         }
         return country;
+    }
+
+    @Override
+    public void deleteCountriesForMovies(String movies) {
+        jdbcTemplate.update(deleteCountriesForMoviesSQL, movies);
     }
 }

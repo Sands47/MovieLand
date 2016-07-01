@@ -71,4 +71,20 @@ public class MovieController {
         String jsonResponse = jsonConverter.toJson(movies);
         return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
+
+    @RoleRequired(role = UserRole.ADMIN)
+    @RequestMapping(value = "/{movieId}", method = RequestMethod.DELETE, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> markMovieForDeletion(@PathVariable int movieId) {
+        movieService.markForDeletion(movieId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RoleRequired(role = UserRole.ADMIN)
+    @RequestMapping(value = "/{movieId}/unmark", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> unmarkMovieForDeletion(@PathVariable int movieId) {
+        movieService.unmarkForDeletion(movieId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

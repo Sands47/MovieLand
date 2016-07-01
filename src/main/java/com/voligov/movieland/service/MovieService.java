@@ -15,4 +15,8 @@ public interface MovieService {
     void add(Movie movie);
 
     void edit(Movie movie);
+
+    void markForDeletion(int movieId);
+
+    void unmarkForDeletion(int movieId);
 }

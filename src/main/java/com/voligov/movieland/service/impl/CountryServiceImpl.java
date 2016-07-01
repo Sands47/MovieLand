@@ -38,4 +38,9 @@ public class CountryServiceImpl implements CountryService {
     public Country getById(Integer id) {
         return countryDao.getById(id);
     }
+
+    @Override
+    public void deleteCountriesForMovies(String movies) {
+        countryDao.deleteCountriesForMovies(movies);
+    }
 }

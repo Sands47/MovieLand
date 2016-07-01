@@ -33,6 +33,9 @@ public class JdbcGenreDao implements GenreDao {
     @Autowired
     private String deleteGenreForMovieSQL;
 
+    @Autowired
+    private String deleteGenresForMoviesSQL;
+
     private final GenreRowMapper genreRowMapper = new GenreRowMapper();
 
     @Override
@@ -71,5 +74,10 @@ public class JdbcGenreDao implements GenreDao {
             return null;
         }
         return genre;
+    }
+
+    @Override
+    public void deleteGenresForMovies(String movies) {
+        jdbcTemplate.update(deleteGenresForMoviesSQL, movies);
     }
 }

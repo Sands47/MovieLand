@@ -13,7 +13,10 @@ import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.service.ReviewService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ import java.util.Random;
 
 @Service
 public class MovieServiceImpl implements MovieService {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private MovieDao movieDao;
 
@@ -42,6 +47,8 @@ public class MovieServiceImpl implements MovieService {
 
     private static final Random random = new Random();
 
+    private List<Integer> markedMovies = new ArrayList<>();
+
     @Override
     public List<Movie> getAll(String ratingOrder, String priceOrder, String page) {
         List<Movie> movies = movieDao.getAll(Integer.valueOf(page),
@@ -49,7 +56,7 @@ public class MovieServiceImpl implements MovieService {
                 SortingOrder.getBySortString(priceOrder));
         for (Movie movie : movies) {
             enrichGenres(movie);
-            encrichCountries(movie);
+            enrichCountries(movie);
         }
         return movies;
     }
@@ -59,7 +66,7 @@ public class MovieServiceImpl implements MovieService {
         Movie movie = movieDao.getById(id);
         if (movie != null) {
             enrichGenres(movie);
-            encrichCountries(movie);
+            enrichCountries(movie);
             List<Review> reviews = reviewService.getByMovieId(id);
             movie.setReviews(reviews);
             if (movie.getReviews().size() > 2) {
@@ -92,7 +99,7 @@ public class MovieServiceImpl implements MovieService {
         List<Movie> movies = movieDao.search(searchParams);
         for (Movie movie : movies) {
             enrichGenres(movie);
-            encrichCountries(movie);
+            enrichCountries(movie);
         }
         return movies;
     }
@@ -111,6 +118,20 @@ public class MovieServiceImpl implements MovieService {
         countryService.updateCountriesForMovie(movie);
     }
 
+    @Override
+    public synchronized void markForDeletion(int movieId) {
+        if (!markedMovies.contains(movieId)) {
+            markedMovies.add(movieId);
+            log.info("Movie {} marked for deletion", movieId);
+        }
+    }
+
+    @Override
+    public synchronized void unmarkForDeletion(int movieId) {
+        markedMovies.remove(movieId);
+        log.info("Movie {} unmarked for deletion", movieId);
+    }
+
     private void enrichGenres(Movie movie) {
         if (movie.getGenres() != null) {
             for (Genre genre : movie.getGenres()) {
@@ -125,7 +146,7 @@ public class MovieServiceImpl implements MovieService {
         }
     }
 
-    private void encrichCountries(Movie movie) {
+    private void enrichCountries(Movie movie) {
         if (movie.getCountries() != null) {
             for (Country country : movie.getCountries()) {
                 Country cachedCountry = countryCachingService.getById(country.getId());
@@ -136,6 +157,26 @@ public class MovieServiceImpl implements MovieService {
                     country.setName(countryFromDb.getName());
                 }
             }
+        }
+    }
+
+    @Scheduled(cron = "0 1 1 * * ?")
+    public synchronized void deleteMarkedMovies() {
+        log.info("Deleting marked movies");
+        if (!markedMovies.isEmpty()) {
+            StringBuilder moviesForDeletion = new StringBuilder();
+            for (Integer id : markedMovies) {
+                moviesForDeletion.append(id);
+                moviesForDeletion.append(",");
+            }
+            moviesForDeletion.delete(moviesForDeletion.length() - 1, moviesForDeletion.length());
+            genreService.deleteGenresForMovies(moviesForDeletion.toString());
+            countryService.deleteCountriesForMovies(moviesForDeletion.toString());
+            movieDao.deleteMovies(moviesForDeletion.toString());
+            log.info("Marked movies deleted, count = {}", markedMovies.size());
+            markedMovies.clear();
+        } else {
+            log.info("No movies are marked for deletion");
         }
     }
 }

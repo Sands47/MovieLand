@@ -16,4 +16,6 @@ public interface MovieDao {
     void add(Movie movie);
 
     void edit(Movie movie);
+
+    void deleteMovies(String movies);
 }

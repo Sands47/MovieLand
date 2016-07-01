@@ -13,4 +13,6 @@ public interface GenreDao {
     void updateGenresForMovie(Movie movie);
 
     Genre getById(Integer id);
+
+    void deleteGenresForMovies(String movies);
 }

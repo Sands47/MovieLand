@@ -96,6 +96,11 @@
         WHERE movie_id = ? AND genre_id = ?;"/>
     </bean>
 
+    <bean id="deleteGenresForMoviesSQL" class="java.lang.String">
+        <constructor-arg value="DELETE FROM movie_genre
+        WHERE movie_id IN (?);"/>
+    </bean>
+
     <bean id="getCountriesSQL" class="java.lang.String">
         <constructor-arg value="SELECT id, name
         FROM country;"/>
@@ -116,6 +121,11 @@
     <bean id="deleteCountryForMovieSQL" class="java.lang.String">
         <constructor-arg value="DELETE FROM movie_country
         WHERE movie_id = ? AND country_id = ?;"/>
+    </bean>
+
+    <bean id="deleteCountriesForMoviesSQL" class="java.lang.String">
+        <constructor-arg value="DELETE FROM movie_country
+        WHERE movie_id IN (?);"/>
     </bean>
 
     <bean id="getRatingSQL" class="java.lang.String">
@@ -170,5 +180,10 @@
         <constructor-arg value="UPDATE movie
         SET name = ?, name_original = ?, release_year = ?, description = ?, price = ?
         WHERE id = ?;"/>
+    </bean>
+
+    <bean id="deleteMoviesSQL" class="java.lang.String">
+        <constructor-arg value="DELETE FROM movie
+        WHERE id IN (?);"/>
     </bean>
 </beans>

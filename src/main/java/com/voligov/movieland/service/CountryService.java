@@ -13,4 +13,6 @@ public interface CountryService {
     void updateCountriesForMovie(Movie movie);
 
     Country getById(Integer id);
+
+    void deleteCountriesForMovies(String movies);
 }
