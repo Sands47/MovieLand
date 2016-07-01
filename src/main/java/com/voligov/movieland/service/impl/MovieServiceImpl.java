@@ -168,16 +168,10 @@ public class MovieServiceImpl implements MovieService {
     public synchronized void deleteMarkedMovies() {
         log.info("Deleting marked movies");
         if (!markedMovies.isEmpty()) {
-            StringBuilder moviesForDeletion = new StringBuilder();
-            for (Integer id : markedMovies) {
-                moviesForDeletion.append(id);
-                moviesForDeletion.append(",");
-            }
-            moviesForDeletion.delete(moviesForDeletion.length() - 1, moviesForDeletion.length());
-            genreService.deleteGenresForMovies(moviesForDeletion.toString());
-            countryService.deleteCountriesForMovies(moviesForDeletion.toString());
-            reviewService.deleteReviewsForMovies(moviesForDeletion.toString());
-            movieDao.deleteMovies(moviesForDeletion.toString());
+            genreService.deleteGenresForMovies(markedMovies);
+            countryService.deleteCountriesForMovies(markedMovies);
+            reviewService.deleteReviewsForMovies(markedMovies);
+            movieDao.deleteMovies(markedMovies);
             log.info("Marked movies deleted, count = {}", markedMovies.size());
             markedMovies.clear();
         } else {

@@ -14,5 +14,5 @@ public interface ReviewService {
 
     User getAuthor(Review review);
 
-    void deleteReviewsForMovies(String movies);
+    void deleteReviewsForMovies(List<Integer> movies);
 }

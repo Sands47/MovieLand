@@ -17,5 +17,5 @@ public interface MovieDao {
 
     void edit(Movie movie);
 
-    void deleteMovies(String movies);
+    void deleteMovies(List<Integer> movies);
 }

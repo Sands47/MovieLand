@@ -40,7 +40,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public void deleteCountriesForMovies(String movies) {
+    public void deleteCountriesForMovies(List<Integer> movies) {
         countryDao.deleteCountriesForMovies(movies);
     }
 }

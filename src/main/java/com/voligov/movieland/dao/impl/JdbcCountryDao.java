@@ -7,6 +7,8 @@ import com.voligov.movieland.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +17,9 @@ import java.util.List;
 public class JdbcCountryDao implements CountryDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     private String getCountriesSQL;
@@ -75,7 +80,9 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public void deleteCountriesForMovies(String movies) {
-        jdbcTemplate.update(deleteCountriesForMoviesSQL, movies);
+    public void deleteCountriesForMovies(List<Integer> movies) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("movieIds", movies);
+        namedParameterJdbcTemplate.update(deleteCountriesForMoviesSQL, parameters);
     }
 }

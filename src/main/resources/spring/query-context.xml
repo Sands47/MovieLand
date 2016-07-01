@@ -63,7 +63,7 @@
 
     <bean id="deleteReviewsForMoviesSQL" class="java.lang.String">
         <constructor-arg value="DELETE FROM review
-        WHERE movie_id IN (?);"/>
+        WHERE movie_id IN (:movieIds);"/>
     </bean>
 
     <bean id="checkReviewExistsSQL" class="java.lang.String">
@@ -103,7 +103,7 @@
 
     <bean id="deleteGenresForMoviesSQL" class="java.lang.String">
         <constructor-arg value="DELETE FROM movie_genre
-        WHERE movie_id IN (?);"/>
+        WHERE movie_id IN (:movieIds);"/>
     </bean>
 
     <bean id="getCountriesSQL" class="java.lang.String">
@@ -130,7 +130,7 @@
 
     <bean id="deleteCountriesForMoviesSQL" class="java.lang.String">
         <constructor-arg value="DELETE FROM movie_country
-        WHERE movie_id IN (?);"/>
+        WHERE movie_id IN (:movieIds);"/>
     </bean>
 
     <bean id="getRatingSQL" class="java.lang.String">
@@ -189,6 +189,6 @@
 
     <bean id="deleteMoviesSQL" class="java.lang.String">
         <constructor-arg value="DELETE FROM movie
-        WHERE id IN (?);"/>
+        WHERE id IN (:movieIds);"/>
     </bean>
 </beans>

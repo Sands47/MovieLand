@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,6 +19,9 @@ public class JdbcReviewDao implements ReviewDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     private String getReviewsByMovieIdSQL;
@@ -60,7 +65,9 @@ public class JdbcReviewDao implements ReviewDao {
     }
 
     @Override
-    public void deleteReviewsForMovies(String movies) {
-        jdbcTemplate.update(deleteReviewsForMoviesSQL, movies);
+    public void deleteReviewsForMovies(List<Integer> movies) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("movieIds", movies);
+        namedParameterJdbcTemplate.update(deleteReviewsForMoviesSQL, parameters);
     }
 }

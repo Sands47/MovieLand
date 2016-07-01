@@ -40,7 +40,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public void deleteGenresForMovies(String movies) {
+    public void deleteGenresForMovies(List<Integer> movies) {
         genreDao.deleteGenresForMovies(movies);
     }
 }

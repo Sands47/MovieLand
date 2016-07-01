@@ -14,5 +14,5 @@ public interface GenreService {
 
     Genre getById(Integer id);
 
-    void deleteGenresForMovies(String movies);
+    void deleteGenresForMovies(List<Integer> movies);
 }

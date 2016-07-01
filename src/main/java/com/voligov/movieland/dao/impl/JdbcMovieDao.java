@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,6 +24,9 @@ public class JdbcMovieDao implements MovieDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     private String getAllMoviesSQL;
@@ -91,7 +96,9 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public void deleteMovies(String movies) {
-        jdbcTemplate.update(deleteMoviesSQL, movies);
+    public void deleteMovies(List<Integer> movies) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("movieIds", movies);
+        namedParameterJdbcTemplate.update(deleteMoviesSQL, parameters);
     }
 }

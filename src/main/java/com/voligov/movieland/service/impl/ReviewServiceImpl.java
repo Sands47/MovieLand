@@ -42,7 +42,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReviewsForMovies(String movies) {
+    public void deleteReviewsForMovies(List<Integer> movies) {
         reviewDao.deleteReviewsForMovies(movies);
     }
 
