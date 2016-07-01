@@ -1,5 +1,6 @@
 package com.voligov.movieland.caching;
 
+import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class UserTokenCachingService {
             int index = tokenCache.indexOf(token);
             if (index != -1) {
                 log.info("Token for user Id = {} already exists in cache", token.getUser().getId());
-                return tokenCache.get(index);
+                return copy(tokenCache.get(index));
             }
         } finally {
             readLock.unlock();
@@ -36,7 +37,7 @@ public class UserTokenCachingService {
             writeLock.lock();
             tokenCache.add(token);
             log.info("Token for user Id = {} added to cache", token.getUser().getId());
-            return token;
+            return copy(token);
         } finally {
             writeLock.unlock();
         }
@@ -48,7 +49,7 @@ public class UserTokenCachingService {
             for (UserToken userToken : tokenCache) {
                 if (userToken.getToken().equals(tokenValue)) {
                     log.info("Token for value = {} found in cache", tokenValue);
-                    return userToken;
+                    return copy(userToken);
                 }
             }
             log.warn("Token for value = {} not found in cache", tokenValue);
@@ -73,5 +74,20 @@ public class UserTokenCachingService {
         } finally {
             writeLock.unlock();
         }
+    }
+
+    private UserToken copy(UserToken token) {
+        UserToken copiedToken = new UserToken();
+        User copiedUser = new User();
+        copiedUser.setId(token.getUser().getId());
+        copiedUser.setPassword(token.getUser().getPassword());
+        copiedUser.setFirstName(token.getUser().getFirstName());
+        copiedUser.setLastName(token.getUser().getLastName());
+        copiedUser.setEmail(token.getUser().getEmail());
+        copiedUser.setRole(token.getUser().getRole());
+        copiedToken.setUser(copiedUser);
+        copiedToken.setToken(token.getToken());
+        copiedToken.setExpirationDate(token.getExpirationDate());
+        return copiedToken;
     }
 }

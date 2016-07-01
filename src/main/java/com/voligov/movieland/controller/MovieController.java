@@ -1,8 +1,7 @@
 package com.voligov.movieland.controller;
 
+import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.UserToken;
-import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.util.enums.UserRole;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
@@ -22,34 +21,34 @@ public class MovieController {
     private MovieService movieService;
 
     @Autowired
-    private SecurityService securityService;
-
-    @Autowired
     private JsonConverter jsonConverter;
 
     @RequestMapping(produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
-                                               @RequestParam(value = "price", required = false) String priceOrder) {
-        List<Movie> movies = movieService.getAll(ratingOrder, priceOrder);
+                                               @RequestParam(value = "price", required = false) String priceOrder,
+                                               @RequestParam(value = "page", defaultValue = "1") String page) {
+        List<Movie> movies = movieService.getAll(ratingOrder, priceOrder, page);
         String json = jsonConverter.toJson(movies);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
+    @RoleRequired(role = UserRole.ADMIN)
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> addMovie(@RequestHeader("token") String token, @RequestBody String json) {
-        try {
-            UserToken userToken = securityService.validateToken(token);
-            if (userToken.getUser().getRole() != UserRole.ADMIN) {
-                return new ResponseEntity<>(jsonConverter.wrapResponse("Only admins can add movies"), HttpStatus.UNAUTHORIZED);
-            }
-            Movie movie = jsonConverter.parseMovie(json);
-            movieService.add(movie);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (SecurityException e) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse(e.getMessage()), HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<String> addMovie(@RequestBody String json) {
+        Movie movie = jsonConverter.parseMovie(json);
+        movieService.add(movie);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RoleRequired(role = UserRole.ADMIN)
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> editMovie(@RequestBody String json) {
+        Movie movie = jsonConverter.parseMovie(json);
+        movieService.edit(movie);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")
@@ -57,7 +56,7 @@ public class MovieController {
     public ResponseEntity<String> getMovieById(@PathVariable int movieId) {
         Movie movie = movieService.getById(movieId);
         if (movie == null) {
-            return new ResponseEntity<>(jsonConverter.wrapResponse("Movie not found in database"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(jsonConverter.wrapError("Movie not found in database"), HttpStatus.BAD_REQUEST);
         } else {
             String json = jsonConverter.toJson(movie);
             return new ResponseEntity<>(json, HttpStatus.OK);

@@ -26,6 +26,9 @@ public class JdbcRatingDao implements RatingDao {
     private String getRatingSQL;
 
     @Autowired
+    private String updateRatingSQL;
+
+    @Autowired
     private String updateAvgRatingSQL;
 
     private RatingRowMapper ratingRowMapper = new RatingRowMapper();
@@ -37,13 +40,19 @@ public class JdbcRatingDao implements RatingDao {
     }
 
     @Override
+    public void update(Rating rating) {
+        jdbcTemplate.update(updateRatingSQL, rating.getRating(), rating.getMovie().getId(), rating.getUser().getId());
+        log.info("Rating {} updated in database", rating);
+    }
+
+    @Override
     public List<Rating> get(Movie movie) {
         return jdbcTemplate.query(getRatingSQL, ratingRowMapper, movie.getId());
     }
 
     @Override
-    public void updateAverage(Movie movie, Double averageRating) {
-        jdbcTemplate.update(updateAvgRatingSQL, averageRating, movie.getId());
-        log.info("Rating for movie {} updated to {} to database", movie, averageRating);
+    public void updateAverage(Integer movieId, Double averageRating) {
+        jdbcTemplate.update(updateAvgRatingSQL, averageRating, movieId);
+        log.info("Rating for movie id = {} updated to {} to database", movieId, averageRating);
     }
 }

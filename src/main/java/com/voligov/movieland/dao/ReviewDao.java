@@ -1,6 +1,7 @@
 package com.voligov.movieland.dao;
 
 import com.voligov.movieland.entity.Review;
+import com.voligov.movieland.entity.User;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ public interface ReviewDao {
 
     boolean add(Review review);
 
-    boolean delete(Review review);
+    void delete(Review review);
 }

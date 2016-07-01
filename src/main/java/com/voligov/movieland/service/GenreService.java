@@ -9,4 +9,8 @@ public interface GenreService {
     List<Genre> getAll();
 
     void addGenresForMovie(Movie movie);
+
+    void updateGenresForMovie(Movie movie);
+
+    Genre getById(Integer id);
 }

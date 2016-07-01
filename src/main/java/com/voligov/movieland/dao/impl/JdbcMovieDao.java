@@ -3,6 +3,7 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.util.QueryBuilder;
 import org.slf4j.Logger;
@@ -33,13 +34,17 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getMovieIdSQL;
 
+    @Autowired
+    private String updateMovieSQL;
+
     private final QueryBuilder queryBuilder = new QueryBuilder();
 
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
 
     @Override
-    public List<Movie> getAll() {
-        return jdbcTemplate.query(getAllMoviesSQL, movieRowMapper);
+    public List<Movie> getAll(int page, SortingOrder ratingOrder, SortingOrder priceOrder) {
+        String query = queryBuilder.buildPagedQuery(page, ratingOrder, priceOrder, getAllMoviesSQL);
+        return jdbcTemplate.query(query, movieRowMapper);
     }
 
     @Override
@@ -56,7 +61,8 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public List<Movie> search(MovieSearchParams searchParams) {
-        return jdbcTemplate.query(queryBuilder.buildSearchQuery(searchParams, getAllMoviesSQL), movieRowMapper);
+        String query = queryBuilder.buildSearchQuery(searchParams, getAllMoviesSQL);
+        return jdbcTemplate.query(query, movieRowMapper);
     }
 
     @Override
@@ -66,6 +72,12 @@ public class JdbcMovieDao implements MovieDao {
         Integer movieId = jdbcTemplate.queryForObject(getMovieIdSQL, Integer.class, movie.getName(), movie.getNameOriginal());
         log.info("Movie {} added to database. Id {} generated", movie, movieId);
         movie.setId(movieId);
+    }
 
+    @Override
+    public void edit(Movie movie) {
+        jdbcTemplate.update(updateMovieSQL, movie.getName(), movie.getNameOriginal(), movie.getReleaseYear(),
+                movie.getDescription(), movie.getPrice(), movie.getId());
+        log.info("Movie {} updated in database", movie.getId());
     }
 }

@@ -8,11 +8,11 @@ import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.service.CountryService;
 import com.voligov.movieland.service.GenreService;
+import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.gson.MovieSearchParams;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.service.ReviewService;
-import com.voligov.movieland.util.MovieComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,16 +40,16 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private CountryCachingService countryCachingService;
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
-    public List<Movie> getAll(String ratingOrder, String priceOrder) {
-        List<Movie> movies = movieDao.getAll();
+    @Override
+    public List<Movie> getAll(String ratingOrder, String priceOrder, String page) {
+        List<Movie> movies = movieDao.getAll(Integer.valueOf(page),
+                SortingOrder.getBySortString(ratingOrder),
+                SortingOrder.getBySortString(priceOrder));
         for (Movie movie : movies) {
-            getGenres(movie);
-            getCountries(movie);
-        }
-        if (ratingOrder != null || priceOrder != null) {
-            movies.sort(new MovieComparator(ratingOrder, priceOrder));
+            enrichGenres(movie);
+            encrichCountries(movie);
         }
         return movies;
     }
@@ -58,8 +58,8 @@ public class MovieServiceImpl implements MovieService {
     public Movie getById(int id) {
         Movie movie = movieDao.getById(id);
         if (movie != null) {
-            getGenres(movie);
-            getCountries(movie);
+            enrichGenres(movie);
+            encrichCountries(movie);
             List<Review> reviews = reviewService.getByMovieId(id);
             movie.setReviews(reviews);
             if (movie.getReviews().size() > 2) {
@@ -91,8 +91,8 @@ public class MovieServiceImpl implements MovieService {
         }
         List<Movie> movies = movieDao.search(searchParams);
         for (Movie movie : movies) {
-            getGenres(movie);
-            getCountries(movie);
+            enrichGenres(movie);
+            encrichCountries(movie);
         }
         return movies;
     }
@@ -104,18 +104,37 @@ public class MovieServiceImpl implements MovieService {
         countryService.addCountriesForMovie(movie);
     }
 
-    private void getGenres(Movie movie) {
+    @Override
+    public void edit(Movie movie) {
+        movieDao.edit(movie);
+        genreService.updateGenresForMovie(movie);
+        countryService.updateCountriesForMovie(movie);
+    }
+
+    private void enrichGenres(Movie movie) {
         if (movie.getGenres() != null) {
             for (Genre genre : movie.getGenres()) {
-                genre.setName(genreCachingService.getById(genre.getId()).getName());
+                Genre cachedGenre = genreCachingService.getById(genre.getId());
+                if (cachedGenre != null) {
+                    genre.setName(cachedGenre.getName());
+                } else {
+                    Genre genreFromDb = genreService.getById(genre.getId());
+                    genre.setName(genreFromDb.getName());
+                }
             }
         }
     }
 
-    private void getCountries(Movie movie) {
+    private void encrichCountries(Movie movie) {
         if (movie.getCountries() != null) {
             for (Country country : movie.getCountries()) {
-                country.setName(countryCachingService.getById(country.getId()).getName());
+                Country cachedCountry = countryCachingService.getById(country.getId());
+                if (cachedCountry != null) {
+                    country.setName(cachedCountry.getName());
+                } else {
+                    Country countryFromDb = countryService.getById(country.getId());
+                    country.setName(countryFromDb.getName());
+                }
             }
         }
     }

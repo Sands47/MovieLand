@@ -26,4 +26,16 @@ public class CountryServiceImpl implements CountryService {
             countryDao.addCountriesForMovie(movie);
         }
     }
+
+    @Override
+    public void updateCountriesForMovie(Movie movie) {
+        if (movie.getCountries() != null) {
+            countryDao.updateCountriesForMovie(movie);
+        }
+    }
+
+    @Override
+    public Country getById(Integer id) {
+        return countryDao.getById(id);
+    }
 }

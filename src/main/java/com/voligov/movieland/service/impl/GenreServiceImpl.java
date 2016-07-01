@@ -26,4 +26,16 @@ public class GenreServiceImpl implements GenreService {
             genreDao.addGenresForMovie(movie);
         }
     }
+
+    @Override
+    public void updateGenresForMovie(Movie movie) {
+        if (movie.getGenres() != null) {
+            genreDao.updateGenresForMovie(movie);
+        }
+    }
+
+    @Override
+    public Genre getById(Integer id) {
+        return genreDao.getById(id);
+    }
 }

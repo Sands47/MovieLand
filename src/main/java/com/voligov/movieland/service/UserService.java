@@ -4,5 +4,7 @@ import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserCredentials;
 
 public interface UserService {
-    User getUser(UserCredentials credentials);
+    User getUser(String email);
+
+    User getUserByReviewId(Integer reviewId);
 }

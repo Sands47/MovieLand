@@ -11,7 +11,6 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private UUID token;
     private UserRole role;
 
     public Integer getId() {
@@ -54,14 +53,6 @@ public class User {
         this.password = password;
     }
 
-    public UUID getToken() {
-        return token;
-    }
-
-    public void setToken(UUID token) {
-        this.token = token;
-    }
-
     public UserRole getRole() {
         return role;
     }
@@ -76,7 +67,7 @@ public class User {
             return false;
         }
         User user = (User) obj;
-        return id.equals(user.getId()) && firstName.equals(user.getFirstName()) && lastName.equals(user.getLastName());
+        return id.equals(user.getId());
     }
 
     @Override
@@ -86,7 +77,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", token=" + token +
                 ", role=" + role +
                 '}';
     }

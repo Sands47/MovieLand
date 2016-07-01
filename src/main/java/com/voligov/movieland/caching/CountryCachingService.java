@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -22,7 +23,7 @@ public class CountryCachingService {
     public Country getById(int id) {
         for (Country country : countryCache) {
             if (country.getId() == id) {
-                return country;
+                return copy(country);
             }
         }
         log.warn("Country with id = {} not found in cache", id);
@@ -32,7 +33,7 @@ public class CountryCachingService {
     public Country getByName(String name) {
         for (Country country : countryCache) {
             if (country.getName().equals(name)) {
-                return country;
+                return copy(country);
             }
         }
         log.warn("Country with name = {} not found in cache", name);
@@ -46,10 +47,30 @@ public class CountryCachingService {
             countryCache.addAll(countriesFromDb);
         } else {
             for (Country country : countriesFromDb) {
-                if (!countryCache.contains(country)) {
+                int countryIndex = countryCache.indexOf(country);
+                if (countryIndex == -1) {
                     countryCache.add(country);
+                } else {
+                    Country countryInCache = countryCache.get(countryIndex);
+                    if (!countryInCache.getName().equals(country.getName())) {
+                        countryCache.remove(countryIndex);
+                        countryCache.add(country);
+                    }
+                }
+            }
+            for (Country country : countryCache) {
+                int countryIndex = countriesFromDb.indexOf(country);
+                if (countryIndex == -1) {
+                    countryCache.remove(countryIndex);
                 }
             }
         }
+    }
+
+    private Country copy(Country country) {
+        Country countryCopy = new Country();
+        countryCopy.setId(country.getId());
+        countryCopy.setName(country.getName());
+        return countryCopy;
     }
 }

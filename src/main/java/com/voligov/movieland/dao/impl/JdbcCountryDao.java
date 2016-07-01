@@ -5,6 +5,7 @@ import com.voligov.movieland.dao.impl.mapper.CountryRowMapper;
 import com.voligov.movieland.entity.Country;
 import com.voligov.movieland.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,6 @@ import java.util.List;
 
 @Repository
 public class JdbcCountryDao implements CountryDao {
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -20,7 +20,16 @@ public class JdbcCountryDao implements CountryDao {
     private String getCountriesSQL;
 
     @Autowired
+    private String getCountryByIdSQL;
+
+    @Autowired
     private String addMovieCountrySQL;
+
+    @Autowired
+    private String getCountriesByMovieSQL;
+
+    @Autowired
+    private String deleteCountryForMovieSQL;
 
     private final CountryRowMapper countryRowMapper = new CountryRowMapper();
 
@@ -34,5 +43,31 @@ public class JdbcCountryDao implements CountryDao {
         for (Country country : movie.getCountries()) {
             jdbcTemplate.update(addMovieCountrySQL, movie.getId(), country.getId());
         }
+    }
+
+    @Override
+    public void updateCountriesForMovie(Movie movie) {
+        List<Country> countries = jdbcTemplate.query(getCountriesByMovieSQL, countryRowMapper, movie.getId());
+        for (Country country : movie.getCountries()) {
+            if (!countries.contains(country)) {
+                jdbcTemplate.update(addMovieCountrySQL, movie.getId(), country.getId());
+            }
+        }
+        for (Country country : countries) {
+            if (!movie.getCountries().contains(country)) {
+                jdbcTemplate.update(deleteCountryForMovieSQL, movie.getId(), country.getId());
+            }
+        }
+    }
+
+    @Override
+    public Country getById(Integer id) {
+        Country country;
+        try {
+            country = jdbcTemplate.queryForObject(getCountryByIdSQL, countryRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        return country;
     }
 }

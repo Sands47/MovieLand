@@ -6,6 +6,7 @@ import com.voligov.movieland.entity.User;
 import com.voligov.movieland.entity.UserToken;
 import com.voligov.movieland.service.ReviewService;
 import com.voligov.movieland.service.SecurityService;
+import com.voligov.movieland.service.UserService;
 import com.voligov.movieland.util.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,11 @@ import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
-
     @Autowired
     private ReviewDao reviewDao;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public List<Review> getByMovieId(int movieId) {
@@ -24,21 +27,18 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public boolean add(Review review, User user) {
-        if (user.getId().equals(review.getUser().getId())) {
-            return reviewDao.add(review);
-        } else {
-            throw new SecurityException("You can only add reviews for your own user");
-        }
+    public boolean add(Review review) {
+        return reviewDao.add(review);
     }
 
     @Override
-    public boolean delete(Review review, User user) {
-        if (user.getId().equals(review.getUser().getId())
-                || user.getRole() == UserRole.ADMIN) {
-            return reviewDao.delete(review);
-        } else {
-            throw new SecurityException("You can only delete your own review");
-        }
+    public void delete(Review review) {
+        reviewDao.delete(review);
     }
+
+    @Override
+    public User getAuthor(Review review) {
+        return userService.getUserByReviewId(review.getId());
+    }
+
 }
