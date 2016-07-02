@@ -13,6 +13,8 @@ public class Constant {
     public static final String SEMICOLON = ";";
     public static final String QUOTE = "'";
     public static final String PERCENT = "%";
+    public static final String BRACKET_OPEN = "[";
+    public static final String BRACKET_CLOSE = "]";
     public static final String GENRES = "genres";
     public static final String COUNTRIES = "countries";
     public static final String NAME = "name";
@@ -37,4 +39,7 @@ public class Constant {
     public static final String USER_ID = "user_id";
     public static final String V1_PATH = "/v1/";
     public static final String SENDGRID_API_KEY = "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";
+    public static final String SENDGRID_URI = "https://api.sendgrid.com/v3/mail/send";
+    public static final String ERROR_EMAIL_SENDER = "movieland@mail.com";
+    public static final String ERROR_EMAIL_RECIEVER = "sands47@gmail.com";
 }

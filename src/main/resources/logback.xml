@@ -19,7 +19,7 @@
 
     <appender name="EMAIL" class="com.voligov.movieland.util.logging.EmailAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>WARN</level>
+            <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
