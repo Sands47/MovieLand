@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
-
     @Autowired
     private SecurityService securityService;
 

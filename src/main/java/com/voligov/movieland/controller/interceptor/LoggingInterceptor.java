@@ -11,12 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 public class LoggingInterceptor implements HandlerInterceptor {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private ThreadLocal<Long> startTime = new ThreadLocal<>();
-
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
         log.info("Received request {} : {}", httpServletRequest.getRequestURI(), httpServletRequest.getMethod());
-        startTime.set(System.currentTimeMillis());
+        httpServletRequest.setAttribute("startTime", System.currentTimeMillis());
         return true;
     }
 
@@ -27,6 +25,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler, Exception e) throws Exception {
-        log.info("Finished processing request {} : {}. It took {} ms", httpServletRequest.getRequestURI(), httpServletRequest.getMethod(), System.currentTimeMillis() - startTime.get());
+        log.info("Finished processing request {} : {}. It took {} ms", httpServletRequest.getRequestURI(), httpServletRequest.getMethod(),
+                System.currentTimeMillis() - (long) httpServletRequest.getAttribute("startTime"));
     }
 }

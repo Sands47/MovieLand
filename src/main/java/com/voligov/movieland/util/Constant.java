@@ -36,4 +36,5 @@ public class Constant {
     public static final String MOVIE_ID = "movie_id";
     public static final String USER_ID = "user_id";
     public static final String V1_PATH = "/v1/";
+    public static final String SENDGRID_API_KEY = "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";
 }
