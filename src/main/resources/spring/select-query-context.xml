@@ -31,6 +31,15 @@
         GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price;"/>
     </bean>
 
+    <bean id="getPosterSQL" class="java.lang.String">
+        <constructor-arg value="SELECT poster FROM movie_poster WHERE movie_id=?;"/>
+    </bean>
+
+    <bean id="getMovieIdSQL" class="java.lang.String">
+        <constructor-arg value="SELECT id from movie
+        WHERE name = ? AND name_original = ? and description = ?;"/>
+    </bean>
+
     <bean id="getReviewsByMovieIdSQL" class="java.lang.String">
         <constructor-arg value="SELECT t1.id, t1.movie_id, t1.user_id, t1.text, t2.first_name, t2.last_name
         FROM review t1
@@ -49,21 +58,6 @@
         <constructor-arg value="SELECT id, first_name, last_name, email, password, role
         FROM user
         WHERE email = ?;"/>
-    </bean>
-
-    <bean id="addReviewSQL" class="java.lang.String">
-        <constructor-arg value="INSERT INTO review(movie_id, user_id, text)
-        VALUES (?, ?, ?);"/>
-    </bean>
-
-    <bean id="deleteReviewSQL" class="java.lang.String">
-        <constructor-arg value="DELETE FROM review
-        WHERE id = ?;"/>
-    </bean>
-
-    <bean id="deleteReviewsForMoviesSQL" class="java.lang.String">
-        <constructor-arg value="DELETE FROM review
-        WHERE movie_id IN (:movieIds);"/>
     </bean>
 
     <bean id="checkReviewExistsSQL" class="java.lang.String">
@@ -96,16 +90,6 @@
         where movie_id = ?;"/>
     </bean>
 
-    <bean id="deleteGenreForMovieSQL" class="java.lang.String">
-        <constructor-arg value="DELETE FROM movie_genre
-        WHERE movie_id = ? AND genre_id = ?;"/>
-    </bean>
-
-    <bean id="deleteGenresForMoviesSQL" class="java.lang.String">
-        <constructor-arg value="DELETE FROM movie_genre
-        WHERE movie_id IN (:movieIds);"/>
-    </bean>
-
     <bean id="getCountriesSQL" class="java.lang.String">
         <constructor-arg value="SELECT id, name
         FROM country;"/>
@@ -123,72 +107,14 @@
         where movie_id = ?;"/>
     </bean>
 
-    <bean id="deleteCountryForMovieSQL" class="java.lang.String">
-        <constructor-arg value="DELETE FROM movie_country
-        WHERE movie_id = ? AND country_id = ?;"/>
-    </bean>
-
-    <bean id="deleteCountriesForMoviesSQL" class="java.lang.String">
-        <constructor-arg value="DELETE FROM movie_country
-        WHERE movie_id IN (:movieIds);"/>
-    </bean>
-
     <bean id="getRatingSQL" class="java.lang.String">
         <constructor-arg value="SELECT movie_id, user_id, rating
         FROM rating
         WHERE movie_id = ?;"/>
     </bean>
 
-    <bean id="addRatingSQL" class="java.lang.String">
-        <constructor-arg value="INSERT INTO rating(movie_id, user_id, rating)
-        VALUES (?, ?, ?);"/>
-    </bean>
-
-    <bean id="updateRatingSQL" class="java.lang.String">
-        <constructor-arg value="UPDATE rating
-        SET rating = ?
-        WHERE movie_id = ? AND user_id = ?;"/>
-    </bean>
-
     <bean id="avgRatingSQL" class="java.lang.String">
         <constructor-arg value="SELECT AVG(rating) from rating
         WHERE movie_id = ?;"/>
-    </bean>
-
-    <bean id="updateAvgRatingSQL" class="java.lang.String">
-        <constructor-arg value="UPDATE movie
-        SET rating = ?
-        WHERE id = ?;"/>
-    </bean>
-
-    <bean id="addMovieSQL" class="java.lang.String">
-        <constructor-arg value="INSERT INTO movie(name, name_original, release_year, description, price)
-        VALUES (?, ?, ?, ?, ?);"/>
-    </bean>
-
-    <bean id="getMovieIdSQL" class="java.lang.String">
-        <constructor-arg value="SELECT id from movie
-        WHERE name = ? AND name_original = ? and description = ?;"/>
-    </bean>
-
-    <bean id="addMovieGenreSQL" class="java.lang.String">
-        <constructor-arg value="INSERT INTO movie_genre(movie_id, genre_id)
-        VALUES (?, ?);"/>
-    </bean>
-
-    <bean id="addMovieCountrySQL" class="java.lang.String">
-        <constructor-arg value="INSERT INTO movie_country(movie_id, country_id)
-        VALUES (?, ?);"/>
-    </bean>
-
-    <bean id="updateMovieSQL" class="java.lang.String">
-        <constructor-arg value="UPDATE movie
-        SET name = ?, name_original = ?, release_year = ?, description = ?, price = ?
-        WHERE id = ?;"/>
-    </bean>
-
-    <bean id="deleteMoviesSQL" class="java.lang.String">
-        <constructor-arg value="DELETE FROM movie
-        WHERE id IN (:movieIds);"/>
     </bean>
 </beans>

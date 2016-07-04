@@ -3,15 +3,16 @@ package com.voligov.movieland.controller;
 import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.entity.User;
-import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
-import com.voligov.movieland.util.entity.GetMoviesRequestParams;
-import com.voligov.movieland.util.enums.SortingOrder;
-import com.voligov.movieland.util.enums.UserRole;
-import com.voligov.movieland.util.entity.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.util.JsonConverter;
+import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
+import com.voligov.movieland.util.entity.GetMoviesRequestParams;
+import com.voligov.movieland.util.entity.MovieSearchParams;
+import com.voligov.movieland.util.enums.SortingOrder;
+import com.voligov.movieland.util.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -106,5 +107,11 @@ public class MovieController {
     public ResponseEntity<String> unmarkMovieForDeletion(@PathVariable int movieId) {
         movieService.unmarkForDeletion(movieId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/poster/{movieId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getPoster(@PathVariable int movieId) {
+        return movieService.getPoster(movieId);
     }
 }

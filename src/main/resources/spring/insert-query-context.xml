@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="addReviewSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO review(movie_id, user_id, text)
+        VALUES (?, ?, ?);"/>
+    </bean>
+
+    <bean id="addRatingSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO rating(movie_id, user_id, rating)
+        VALUES (?, ?, ?);"/>
+    </bean>
+
+    <bean id="addMovieSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO movie(name, name_original, release_year, description, price)
+        VALUES (?, ?, ?, ?, ?);"/>
+    </bean>
+
+    <bean id="addMovieGenreSQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO movie_genre(movie_id, genre_id)
+        VALUES (?, ?);"/>
+    </bean>
+
+    <bean id="addMovieCountrySQL" class="java.lang.String">
+        <constructor-arg value="INSERT INTO movie_country(movie_id, country_id)
+        VALUES (?, ?);"/>
+    </bean>
+</beans>

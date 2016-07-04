@@ -136,6 +136,11 @@ public class MovieServiceImpl implements MovieService {
         log.info("Movie {} unmarked for deletion", movieId);
     }
 
+    @Override
+    public byte[] getPoster(Integer movieId) {
+        return movieDao.getPoster(movieId);
+    }
+
     private void enrichGenres(Movie movie) {
         if (movie.getGenres() != null) {
             for (Genre genre : movie.getGenres()) {

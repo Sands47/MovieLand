@@ -19,4 +19,6 @@ public interface MovieDao {
     void edit(Movie movie);
 
     void deleteMovies(List<Integer> movies);
+
+    byte[] getPoster(Integer movieId);
 }
