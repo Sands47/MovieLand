@@ -25,9 +25,9 @@ import static com.voligov.movieland.util.Constant.ERROR;
 @Service
 public class JsonConverter {
 
-    private static final List<String> GET_ALL_MOVIES_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "rating", "genres", "name");
+    private static final List<String> GET_ALL_MOVIES_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "rating", "price", "genres", "name");
     private static final List<String> GET_MOVIE_BY_ID_RESPONSE_FIELDS = Arrays.asList("name", "nameOriginal", "releaseYear", "countries", "genres", "name",
-            "description", "reviews", "rating", "user", "firstName", "lastName", "text");
+            "description", "reviews", "rating", "price", "user", "firstName", "lastName", "text");
 
     private Gson gson = new Gson();
     private Gson gsonGetAllMovies = new GsonBuilder().setExclusionStrategies(new FieldExclusionStrategy(GET_ALL_MOVIES_RESPONSE_FIELDS)).create();

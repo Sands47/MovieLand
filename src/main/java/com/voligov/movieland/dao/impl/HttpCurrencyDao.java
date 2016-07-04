@@ -29,7 +29,7 @@ public class HttpCurrencyDao implements CurrencyDao {
     private Map<String, Double> exchangeRates = new ConcurrentHashMap<>();
 
     @PostConstruct
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 0 6 * * *")
     public void updateExchangeRates() {
         try {
             HttpGet exchangeRatesRequest = new HttpGet(PRIVAT_NBU_API_URI);

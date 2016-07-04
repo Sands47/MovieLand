@@ -6,13 +6,10 @@ import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.entity.Country;
 import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.service.CountryService;
-import com.voligov.movieland.service.GenreService;
+import com.voligov.movieland.entity.Review;
+import com.voligov.movieland.service.*;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
-import com.voligov.movieland.entity.Review;
-import com.voligov.movieland.service.MovieService;
-import com.voligov.movieland.service.ReviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +43,9 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private CountryCachingService countryCachingService;
 
+    @Autowired
+    private CurrencyService currencyService;
+
     private static final Random RANDOM = new Random();
 
     private List<Integer> markedMovies = new ArrayList<>();
@@ -56,16 +56,18 @@ public class MovieServiceImpl implements MovieService {
         for (Movie movie : movies) {
             enrichGenres(movie);
             enrichCountries(movie);
+            currencyService.convertCurrency(movie, params.getCurrency());
         }
         return movies;
     }
 
     @Override
-    public Movie getById(int id) {
+    public Movie getById(int id, String currency) {
         Movie movie = movieDao.getById(id);
         if (movie != null) {
             enrichGenres(movie);
             enrichCountries(movie);
+            currencyService.convertCurrency(movie, currency);
             List<Review> reviews = reviewService.getByMovieId(id);
             movie.setReviews(reviews);
             if (movie.getReviews().size() > 2) {

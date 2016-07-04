@@ -29,11 +29,13 @@ public class MovieController {
     @ResponseBody
     public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
                                                @RequestParam(value = "price", required = false) String priceOrder,
-                                               @RequestParam(value = "page", defaultValue = "1") String page) {
+                                               @RequestParam(value = "page", defaultValue = "1") String page,
+                                               @RequestParam(value = "currency", required = false) String currency) {
         GetMoviesRequestParams params = new GetMoviesRequestParams();
         params.setRatingOrder(SortingOrder.getBySortString(ratingOrder));
         params.setPriceOrder(SortingOrder.getBySortString(priceOrder));
         params.setPage(Integer.valueOf(page));
+        params.setCurrency(currency);
         List<Movie> movies = movieService.getAll(params);
         String json = jsonConverter.toJson(movies);
         return new ResponseEntity<>(json, HttpStatus.OK);
@@ -59,8 +61,8 @@ public class MovieController {
 
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> getMovieById(@PathVariable int movieId) {
-        Movie movie = movieService.getById(movieId);
+    public ResponseEntity<String> getMovieById(@PathVariable int movieId, @RequestParam(value = "currency", required = false) String currency) {
+        Movie movie = movieService.getById(movieId, currency);
         if (movie == null) {
             return new ResponseEntity<>(jsonConverter.wrapError("Movie not found in database"), HttpStatus.BAD_REQUEST);
         } else {
