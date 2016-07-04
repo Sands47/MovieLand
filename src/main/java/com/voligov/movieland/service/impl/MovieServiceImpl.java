@@ -8,6 +8,7 @@ import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.service.*;
+import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
 import org.slf4j.Logger;
@@ -62,13 +63,13 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public Movie getById(int id, String currency) {
-        Movie movie = movieDao.getById(id);
+    public Movie getById(GetMovieByIdRequestParams params) {
+        Movie movie = movieDao.getById(params);
         if (movie != null) {
             enrichGenres(movie);
             enrichCountries(movie);
-            currencyService.convertCurrency(movie, currency);
-            List<Review> reviews = reviewService.getByMovieId(id);
+            currencyService.convertCurrency(movie, params.getCurrency());
+            List<Review> reviews = reviewService.getByMovieId(params.getMovieId());
             movie.setReviews(reviews);
             if (movie.getReviews().size() > 2) {
                 List<Review> randomReviews = new ArrayList<>();

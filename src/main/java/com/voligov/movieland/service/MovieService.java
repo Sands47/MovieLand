@@ -1,6 +1,7 @@
 package com.voligov.movieland.service;
 
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
 
@@ -10,7 +11,7 @@ public interface MovieService {
 
     List<Movie> getAll(GetMoviesRequestParams params);
 
-    Movie getById(int id, String currency);
+    Movie getById(GetMovieByIdRequestParams params);
 
     List<Movie> search(MovieSearchParams searchParams);
 

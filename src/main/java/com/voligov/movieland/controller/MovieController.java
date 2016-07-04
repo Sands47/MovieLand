@@ -2,6 +2,8 @@ package com.voligov.movieland.controller;
 
 import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.User;
+import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.enums.UserRole;
@@ -14,7 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
+import static com.voligov.movieland.util.Constant.AUTHORIZED_USER;
 
 @Controller
 @RequestMapping("/v1/movie")
@@ -61,8 +66,15 @@ public class MovieController {
 
     @RequestMapping(value = "/{movieId}", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> getMovieById(@PathVariable int movieId, @RequestParam(value = "currency", required = false) String currency) {
-        Movie movie = movieService.getById(movieId, currency);
+    public ResponseEntity<String> getMovieById(@PathVariable int movieId,
+                                               @RequestParam(value = "currency", required = false) String currency,
+                                               HttpServletRequest request) {
+        GetMovieByIdRequestParams params = new GetMovieByIdRequestParams();
+        params.setMovieId(movieId);
+        params.setCurrency(currency);
+        User authorizedUser = (User) request.getAttribute(AUTHORIZED_USER);
+        params.setUser(authorizedUser);
+        Movie movie = movieService.getById(params);
         if (movie == null) {
             return new ResponseEntity<>(jsonConverter.wrapError("Movie not found in database"), HttpStatus.BAD_REQUEST);
         } else {

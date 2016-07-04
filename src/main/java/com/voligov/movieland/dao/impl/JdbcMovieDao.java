@@ -4,6 +4,7 @@ import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.util.QueryBuilder;
+import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
 import org.slf4j.Logger;
@@ -59,12 +60,12 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public Movie getById(int id) {
+    public Movie getById(GetMovieByIdRequestParams params) {
         Movie movie;
         try {
-            movie = jdbcTemplate.queryForObject(getMovieByIdSQL, new Object[]{id}, movieRowMapper);
+            movie = jdbcTemplate.queryForObject(getMovieByIdSQL, movieRowMapper, params.getMovieId());
         } catch (EmptyResultDataAccessException e) {
-            log.warn("Movie with id = {} not found in database", id);
+            log.warn("Movie with id = {} not found in database", params.getMovieId());
             return null;
         }
         return movie;
