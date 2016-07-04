@@ -1,11 +1,10 @@
 package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.User;
-import com.voligov.movieland.util.entity.UserCredentials;
 import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.service.UserService;
-import com.voligov.movieland.util.Constant;
 import com.voligov.movieland.util.JsonConverter;
+import com.voligov.movieland.util.entity.UserCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.voligov.movieland.util.Constant.TOKEN;
+import static com.voligov.movieland.util.Constant.V1_PATH;
 
 @Controller
 @RequestMapping("/v1/user")
@@ -42,9 +44,9 @@ public class UserController {
             return new ResponseEntity<>(jsonConverter.wrapError("Login or password are invalid"), HttpStatus.BAD_REQUEST);
         }
         String token = securityService.registerUser(user).getToken();
-        Cookie cookie = new Cookie(Constant.TOKEN, token);
+        Cookie cookie = new Cookie(TOKEN, token);
         cookie.setMaxAge(7200);
-        cookie.setPath(Constant.V1_PATH);
+        cookie.setPath(V1_PATH);
         response.addCookie(cookie);
         return new ResponseEntity<>(jsonConverter.wrapResponse(token), HttpStatus.OK);
     }

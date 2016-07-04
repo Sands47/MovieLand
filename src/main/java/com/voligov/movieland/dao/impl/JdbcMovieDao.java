@@ -3,10 +3,9 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.util.Constant;
+import com.voligov.movieland.util.QueryBuilder;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
-import com.voligov.movieland.util.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.voligov.movieland.util.Constant.MOVIE_IDS;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
@@ -99,7 +100,7 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public void deleteMovies(List<Integer> movies) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue(Constant.MOVIE_IDS, movies);
+        parameters.addValue(MOVIE_IDS, movies);
         namedParameterJdbcTemplate.update(deleteMoviesSQL, parameters);
     }
 }

@@ -46,7 +46,7 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private CountryCachingService countryCachingService;
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     private List<Integer> markedMovies = new ArrayList<>();
 
@@ -71,7 +71,7 @@ public class MovieServiceImpl implements MovieService {
             if (movie.getReviews().size() > 2) {
                 List<Review> randomReviews = new ArrayList<>();
                 for (int i = 0; i < 2; i++) {
-                    int index = random.nextInt(movie.getReviews().size());
+                    int index = RANDOM.nextInt(movie.getReviews().size());
                     randomReviews.add(movie.getReviews().get(index));
                     movie.getReviews().remove(index);
                 }

@@ -3,14 +3,21 @@ package com.voligov.movieland.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.voligov.movieland.entity.*;
+import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.Rating;
+import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.util.entity.MovieSearchParams;
 import com.voligov.movieland.util.entity.UserCredentials;
-import com.voligov.movieland.util.gson.*;
+import com.voligov.movieland.util.gson.FieldExclusionStrategy;
+import com.voligov.movieland.util.gson.MovieJsonDeserializer;
+import com.voligov.movieland.util.gson.RatingJsonDeserializer;
+import com.voligov.movieland.util.gson.ReviewJsonDeserializer;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static com.voligov.movieland.util.Constant.ERROR;
 
 @Service
 public class JsonConverter {
@@ -56,7 +63,7 @@ public class JsonConverter {
 
     public String wrapError(String errorMessage) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(Constant.ERROR, errorMessage);
+        jsonObject.addProperty(ERROR, errorMessage);
         return gson.toJson(jsonObject);
     }
 

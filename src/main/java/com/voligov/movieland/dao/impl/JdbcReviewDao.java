@@ -3,7 +3,6 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.ReviewDao;
 import com.voligov.movieland.dao.impl.mapper.ReviewRowMapper;
 import com.voligov.movieland.entity.Review;
-import com.voligov.movieland.util.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.voligov.movieland.util.Constant.MOVIE_IDS;
 
 @Repository
 public class JdbcReviewDao implements ReviewDao {
@@ -68,7 +69,7 @@ public class JdbcReviewDao implements ReviewDao {
     @Override
     public void deleteReviewsForMovies(List<Integer> movies) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue(Constant.MOVIE_IDS, movies);
+        parameters.addValue(MOVIE_IDS, movies);
         namedParameterJdbcTemplate.update(deleteReviewsForMoviesSQL, parameters);
     }
 }
