@@ -5,6 +5,7 @@ import ch.qos.logback.core.AppenderBase;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.voligov.movieland.util.http.CustomHttpClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -29,21 +30,10 @@ import static com.voligov.movieland.util.Constant.*;
 public class EmailAppender extends AppenderBase<ILoggingEvent> {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private CloseableHttpClient httpclient;
     private Gson gson = new Gson();
 
     @Override
     public void start() {
-        SSLContextBuilder builder = new SSLContextBuilder();
-        try {
-            builder.loadTrustMaterial(null, (chain, authType) -> true);
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-                    builder.build());
-            httpclient = HttpClients.custom().setSSLSocketFactory(
-                    sslsf).build();
-        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-            log.warn("Exception creating Http client: ", e);
-        }
         super.start();
     }
 
@@ -59,12 +49,10 @@ public class EmailAppender extends AppenderBase<ILoggingEvent> {
                     "ERROR occured", message);
             StringEntity body = new StringEntity(bodyJson);
             httpPost.setEntity(body);
-            try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
-                HttpEntity entity = response.getEntity();
-                EntityUtils.consume(entity);
-            }
+            HttpEntity entity = CustomHttpClient.post(httpPost, 2000, 2000);
+            EntityUtils.consume(entity);
         } catch (IOException e) {
-            log.warn("Exception while sending email: ", e);
+            log.error("Exception while sending email: ", e);
         }
     }
 

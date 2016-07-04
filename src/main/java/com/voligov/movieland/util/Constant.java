@@ -42,4 +42,5 @@ public class Constant {
     public static final String SENDGRID_URI = "https://api.sendgrid.com/v3/mail/send";
     public static final String ERROR_EMAIL_SENDER = "movieland@mail.com";
     public static final String ERROR_EMAIL_RECIEVER = "sands47@gmail.com";
+    public static final String PRIVAT_NBU_API_URI = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=3";
 }
