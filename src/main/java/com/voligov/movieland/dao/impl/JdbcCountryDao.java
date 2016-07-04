@@ -4,9 +4,12 @@ import com.voligov.movieland.dao.CountryDao;
 import com.voligov.movieland.dao.impl.mapper.CountryRowMapper;
 import com.voligov.movieland.entity.Country;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,6 +18,9 @@ import java.util.List;
 public class JdbcCountryDao implements CountryDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     private String getCountriesSQL;
@@ -30,6 +36,9 @@ public class JdbcCountryDao implements CountryDao {
 
     @Autowired
     private String deleteCountryForMovieSQL;
+
+    @Autowired
+    private String deleteCountriesForMoviesSQL;
 
     private final CountryRowMapper countryRowMapper = new CountryRowMapper();
 
@@ -69,5 +78,12 @@ public class JdbcCountryDao implements CountryDao {
             return null;
         }
         return country;
+    }
+
+    @Override
+    public void deleteCountriesForMovies(List<Integer> movies) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue(Constant.MOVIE_IDS, movies);
+        namedParameterJdbcTemplate.update(deleteCountriesForMoviesSQL, parameters);
     }
 }

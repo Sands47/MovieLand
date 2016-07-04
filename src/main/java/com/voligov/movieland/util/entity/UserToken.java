@@ -1,7 +1,8 @@
-package com.voligov.movieland.entity;
+package com.voligov.movieland.util.entity;
+
+import com.voligov.movieland.entity.User;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class UserToken {
     private User user;

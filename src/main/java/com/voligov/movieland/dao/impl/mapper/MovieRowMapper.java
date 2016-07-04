@@ -3,6 +3,7 @@ package com.voligov.movieland.dao.impl.mapper;
 import com.voligov.movieland.entity.Country;
 import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.Constant;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -14,16 +15,16 @@ public class MovieRowMapper implements RowMapper<Movie> {
 
     public Movie mapRow(ResultSet resultSet, int i) throws SQLException {
         Movie movie = new Movie();
-        movie.setId(resultSet.getInt("id"));
-        movie.setName(resultSet.getString("name"));
-        movie.setNameOriginal(resultSet.getString("name_original"));
-        movie.setReleaseYear(resultSet.getInt("release_year"));
-        movie.setDescription(resultSet.getString("description"));
-        movie.setRating(resultSet.getDouble("rating"));
-        movie.setPrice(resultSet.getDouble("price"));
-        String genres = resultSet.getString("genres");
+        movie.setId(resultSet.getInt(Constant.ID));
+        movie.setName(resultSet.getString(Constant.NAME));
+        movie.setNameOriginal(resultSet.getString(Constant.NAME_ORIGINAL));
+        movie.setReleaseYear(resultSet.getInt(Constant.RELEASE_YEAR));
+        movie.setDescription(resultSet.getString(Constant.DESCRIPTION));
+        movie.setRating(resultSet.getDouble(Constant.RATING));
+        movie.setPrice(resultSet.getDouble(Constant.PRICE));
+        String genres = resultSet.getString(Constant.GENRES);
         if (genres != null) {
-            String[] genresArray = genres.split(",");
+            String[] genresArray = genres.split(Constant.COMMA);
             List<Genre> genresList = new ArrayList<>();
             for (String genreId : genresArray) {
                 Genre genre = new Genre();
@@ -32,9 +33,9 @@ public class MovieRowMapper implements RowMapper<Movie> {
             }
             movie.setGenres(genresList);
         }
-        String countries = resultSet.getString("countries");
+        String countries = resultSet.getString(Constant.COUNTRIES);
         if (countries != null) {
-            String[] countriesArray = countries.split(",");
+            String[] countriesArray = countries.split(Constant.COMMA);
             List<Country> countriesList = new ArrayList<>();
             for (String countryId : countriesArray) {
                 Country country = new Country();

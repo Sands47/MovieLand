@@ -4,6 +4,7 @@ import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Review;
 import com.voligov.movieland.entity.User;
 import com.voligov.movieland.service.ReviewService;
+import com.voligov.movieland.util.Constant;
 import com.voligov.movieland.util.JsonConverter;
 import com.voligov.movieland.util.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ReviewController {
     @ResponseBody
     public ResponseEntity<String> addReview(@RequestBody String json, HttpServletRequest request) {
         Review review = jsonConverter.parseReview(json);
-        User authorizedUser = (User) request.getAttribute("authorizedUser");
+        User authorizedUser = (User) request.getAttribute(Constant.AUTHORIZED_USER);
         if (!authorizedUser.equals(review.getUser())) {
             return new ResponseEntity<>(jsonConverter.wrapError("You can only add reviews for your own user"), HttpStatus.UNAUTHORIZED);
         }
@@ -44,7 +45,7 @@ public class ReviewController {
     @ResponseBody
     public ResponseEntity<String> deleteReview(@RequestBody String json, HttpServletRequest request) {
         Review review = jsonConverter.parseReview(json);
-        User authorizedUser = (User) request.getAttribute("authorizedUser");
+        User authorizedUser = (User) request.getAttribute(Constant.AUTHORIZED_USER);
         if (authorizedUser.getRole() == UserRole.USER) {
             User reviewAuthor = reviewService.getAuthor(review);
             if (reviewAuthor == null) {

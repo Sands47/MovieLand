@@ -13,4 +13,6 @@ public interface CountryDao {
     void updateCountriesForMovie(Movie movie);
 
     Country getById(Integer id);
+
+    void deleteCountriesForMovies(List<Integer> movies);
 }

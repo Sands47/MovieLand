@@ -1,12 +1,13 @@
 package com.voligov.movieland.service;
 
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.util.gson.MovieSearchParams;
+import com.voligov.movieland.util.entity.GetMoviesRequestParams;
+import com.voligov.movieland.util.entity.MovieSearchParams;
 import java.util.List;
 
 public interface MovieService {
 
-    List<Movie> getAll(String ratingOrder, String priceOrder, String page);
+    List<Movie> getAll(GetMoviesRequestParams params);
 
     Movie getById(int id);
 
@@ -15,4 +16,8 @@ public interface MovieService {
     void add(Movie movie);
 
     void edit(Movie movie);
+
+    void markForDeletion(int movieId);
+
+    void unmarkForDeletion(int movieId);
 }

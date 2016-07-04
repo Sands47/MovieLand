@@ -11,4 +11,6 @@ public interface ReviewDao {
     boolean add(Review review);
 
     void delete(Review review);
+
+    void deleteReviewsForMovies(List<Integer> movies);
 }

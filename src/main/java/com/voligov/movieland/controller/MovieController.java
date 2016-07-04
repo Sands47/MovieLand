@@ -2,8 +2,10 @@ package com.voligov.movieland.controller;
 
 import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.util.entity.GetMoviesRequestParams;
+import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.enums.UserRole;
-import com.voligov.movieland.util.gson.MovieSearchParams;
+import com.voligov.movieland.util.entity.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,11 @@ public class MovieController {
     public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
                                                @RequestParam(value = "price", required = false) String priceOrder,
                                                @RequestParam(value = "page", defaultValue = "1") String page) {
-        List<Movie> movies = movieService.getAll(ratingOrder, priceOrder, page);
+        GetMoviesRequestParams params = new GetMoviesRequestParams();
+        params.setRatingOrder(SortingOrder.getBySortString(ratingOrder));
+        params.setPriceOrder(SortingOrder.getBySortString(priceOrder));
+        params.setPage(Integer.valueOf(page));
+        List<Movie> movies = movieService.getAll(params);
         String json = jsonConverter.toJson(movies);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
@@ -70,5 +76,21 @@ public class MovieController {
         List<Movie> movies = movieService.search(searchParams);
         String jsonResponse = jsonConverter.toJson(movies);
         return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
+    }
+
+    @RoleRequired(role = UserRole.ADMIN)
+    @RequestMapping(value = "/{movieId}", method = RequestMethod.DELETE, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> markMovieForDeletion(@PathVariable int movieId) {
+        movieService.markForDeletion(movieId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RoleRequired(role = UserRole.ADMIN)
+    @RequestMapping(value = "/{movieId}/unmark", method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> unmarkMovieForDeletion(@PathVariable int movieId) {
+        movieService.unmarkForDeletion(movieId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

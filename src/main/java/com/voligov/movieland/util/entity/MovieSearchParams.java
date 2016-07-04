@@ -1,4 +1,4 @@
-package com.voligov.movieland.util.gson;
+package com.voligov.movieland.util.entity;
 
 public class MovieSearchParams {
     private String title;

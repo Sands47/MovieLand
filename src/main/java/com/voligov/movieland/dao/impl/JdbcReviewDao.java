@@ -3,10 +3,13 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.ReviewDao;
 import com.voligov.movieland.dao.impl.mapper.ReviewRowMapper;
 import com.voligov.movieland.entity.Review;
+import com.voligov.movieland.util.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +22,9 @@ public class JdbcReviewDao implements ReviewDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
     private String getReviewsByMovieIdSQL;
 
     @Autowired
@@ -29,6 +35,9 @@ public class JdbcReviewDao implements ReviewDao {
 
     @Autowired
     private String checkReviewExistsSQL;
+
+    @Autowired
+    private String deleteReviewsForMoviesSQL;
 
     private final ReviewRowMapper reviewRowMapper = new ReviewRowMapper();
 
@@ -54,5 +63,12 @@ public class JdbcReviewDao implements ReviewDao {
     public void delete(Review review) {
         jdbcTemplate.update(deleteReviewSQL, review.getId());
         log.info("Review {} deleted from database", review);
+    }
+
+    @Override
+    public void deleteReviewsForMovies(List<Integer> movies) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue(Constant.MOVIE_IDS, movies);
+        namedParameterJdbcTemplate.update(deleteReviewsForMoviesSQL, parameters);
     }
 }

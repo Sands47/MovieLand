@@ -3,7 +3,6 @@ package com.voligov.movieland.dao.impl;
 import com.voligov.movieland.dao.UserDao;
 import com.voligov.movieland.dao.impl.mapper.UserRowMapper;
 import com.voligov.movieland.entity.User;
-import com.voligov.movieland.entity.UserCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

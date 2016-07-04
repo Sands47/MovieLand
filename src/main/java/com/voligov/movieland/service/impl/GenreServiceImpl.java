@@ -38,4 +38,9 @@ public class GenreServiceImpl implements GenreService {
     public Genre getById(Integer id) {
         return genreDao.getById(id);
     }
+
+    @Override
+    public void deleteGenresForMovies(List<Integer> movies) {
+        genreDao.deleteGenresForMovies(movies);
+    }
 }
