@@ -4,9 +4,7 @@ import com.voligov.movieland.dao.CurrencyDao;
 import com.voligov.movieland.util.JsonConverter;
 import com.voligov.movieland.util.entity.ExchangeRate;
 import com.voligov.movieland.util.http.CustomHttpClient;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +33,7 @@ public class HttpCurrencyDao implements CurrencyDao {
     public void updateExchangeRates() {
         try {
             HttpGet exchangeRatesRequest = new HttpGet(PRIVAT_NBU_API_URI);
-            HttpEntity entity = CustomHttpClient.get(exchangeRatesRequest, 2000, 2000);
-            String exchangeRatesJson = EntityUtils.toString(entity);
+            String exchangeRatesJson = CustomHttpClient.get(exchangeRatesRequest, 2000, 2000);
             List<ExchangeRate> exchangeRateList = jsonConverter.parseExchangeRates(exchangeRatesJson);
             for (ExchangeRate exchangeRate : exchangeRateList) {
                 exchangeRates.put(exchangeRate.getCurrency(), exchangeRate.getBuyRate());

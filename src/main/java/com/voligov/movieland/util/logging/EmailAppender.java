@@ -6,22 +6,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.voligov.movieland.util.http.CustomHttpClient;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import static com.voligov.movieland.util.Constant.*;
@@ -49,8 +39,7 @@ public class EmailAppender extends AppenderBase<ILoggingEvent> {
                     "ERROR occured", message);
             StringEntity body = new StringEntity(bodyJson);
             httpPost.setEntity(body);
-            HttpEntity entity = CustomHttpClient.post(httpPost, 2000, 2000);
-            EntityUtils.consume(entity);
+            CustomHttpClient.post(httpPost, 2000, 2000);
         } catch (IOException e) {
             log.error("Exception while sending email: ", e);
         }

@@ -1,6 +1,5 @@
 package com.voligov.movieland.util.http;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,6 +9,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,22 +35,22 @@ public class CustomHttpClient {
         }
     }
 
-    public static HttpEntity post(HttpPost httpPost) throws IOException {
+    public static String post(HttpPost httpPost) throws IOException {
         CloseableHttpResponse response = client.execute(httpPost);
-        return response.getEntity();
+        return EntityUtils.toString(response.getEntity());
     }
 
-    public static HttpEntity post(HttpPost httpPost, Integer connectionTimeout, Integer socketTimeout) throws IOException {
+    public static String post(HttpPost httpPost, Integer connectionTimeout, Integer socketTimeout) throws IOException {
         setRequestBuilder(httpPost, connectionTimeout, socketTimeout);
         return post(httpPost);
     }
 
-    public static HttpEntity get(HttpGet httpGet) throws IOException {
+    public static String get(HttpGet httpGet) throws IOException {
         CloseableHttpResponse response = client.execute(httpGet);
-        return response.getEntity();
+        return EntityUtils.toString(response.getEntity());
     }
 
-    public static HttpEntity get(HttpGet httpGet, Integer connectionTimeout, Integer socketTimeout) throws IOException {
+    public static String get(HttpGet httpGet, Integer connectionTimeout, Integer socketTimeout) throws IOException {
         setRequestBuilder(httpGet, connectionTimeout, socketTimeout);
         return get(httpGet);
     }
