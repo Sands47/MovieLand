@@ -54,7 +54,8 @@ public class EmailAppender extends AppenderBase<ILoggingEvent> {
             String message = Constant.BRACKET_OPEN + new Date(event.getTimeStamp()) + Constant.BRACKET_CLOSE +
                     Constant.SPACE + event.getThreadName() + Constant.SPACE + event.getLevel().levelStr +
                     Constant.SPACE + event.getLoggerName() + " - " + event.getMessage();
-            String bodyJson = buildSendgridMessage(Constant.ERROR_EMAIL_RECIEVER, Constant.ERROR_EMAIL_SENDER, "ERROR occured", message);
+            String bodyJson = buildSendgridMessage(Constant.ERROR_EMAIL_RECIEVER, Constant.ERROR_EMAIL_SENDER,
+                    "ERROR occured", message);
             StringEntity body = new StringEntity(bodyJson);
             httpPost.setEntity(body);
             try (CloseableHttpResponse response = httpclient.execute(httpPost)) {

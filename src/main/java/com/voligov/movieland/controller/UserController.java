@@ -1,7 +1,7 @@
 package com.voligov.movieland.controller;
 
 import com.voligov.movieland.entity.User;
-import com.voligov.movieland.entity.UserCredentials;
+import com.voligov.movieland.util.entity.UserCredentials;
 import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.service.UserService;
 import com.voligov.movieland.util.Constant;

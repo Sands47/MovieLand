@@ -2,12 +2,11 @@ package com.voligov.movieland.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.voligov.movieland.caching.GenreCachingService;
 import com.voligov.movieland.entity.*;
+import com.voligov.movieland.util.entity.MovieSearchParams;
+import com.voligov.movieland.util.entity.UserCredentials;
 import com.voligov.movieland.util.gson.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

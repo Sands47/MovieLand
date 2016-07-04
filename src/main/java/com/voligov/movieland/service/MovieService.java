@@ -1,8 +1,8 @@
 package com.voligov.movieland.service;
 
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.util.GetMoviesRequestParams;
-import com.voligov.movieland.util.gson.MovieSearchParams;
+import com.voligov.movieland.util.entity.GetMoviesRequestParams;
+import com.voligov.movieland.util.entity.MovieSearchParams;
 import java.util.List;
 
 public interface MovieService {

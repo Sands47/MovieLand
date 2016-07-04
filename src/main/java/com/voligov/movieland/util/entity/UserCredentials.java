@@ -1,4 +1,4 @@
-package com.voligov.movieland.entity;
+package com.voligov.movieland.util.entity;
 
 public class UserCredentials {
     private String login;

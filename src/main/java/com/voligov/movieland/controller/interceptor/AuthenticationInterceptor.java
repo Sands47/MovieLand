@@ -1,7 +1,7 @@
 package com.voligov.movieland.controller.interceptor;
 
 import com.voligov.movieland.controller.annotation.RoleRequired;
-import com.voligov.movieland.entity.UserToken;
+import com.voligov.movieland.util.entity.UserToken;
 import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.util.Constant;
 import com.voligov.movieland.util.enums.UserRole;

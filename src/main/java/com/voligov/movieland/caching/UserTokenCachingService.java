@@ -1,7 +1,7 @@
 package com.voligov.movieland.caching;
 
 import com.voligov.movieland.entity.User;
-import com.voligov.movieland.entity.UserToken;
+import com.voligov.movieland.util.entity.UserToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;

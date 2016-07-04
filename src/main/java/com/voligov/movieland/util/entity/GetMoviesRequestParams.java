@@ -1,4 +1,4 @@
-package com.voligov.movieland.util;
+package com.voligov.movieland.util.entity;
 
 
 import com.voligov.movieland.util.enums.SortingOrder;

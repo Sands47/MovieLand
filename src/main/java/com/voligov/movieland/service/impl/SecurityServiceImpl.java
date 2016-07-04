@@ -2,8 +2,8 @@ package com.voligov.movieland.service.impl;
 
 import com.voligov.movieland.caching.UserTokenCachingService;
 import com.voligov.movieland.entity.User;
-import com.voligov.movieland.entity.UserCredentials;
-import com.voligov.movieland.entity.UserToken;
+import com.voligov.movieland.util.entity.UserCredentials;
+import com.voligov.movieland.util.entity.UserToken;
 import com.voligov.movieland.service.SecurityService;
 import com.voligov.movieland.util.enums.UserRole;
 import org.apache.commons.lang3.time.DateUtils;

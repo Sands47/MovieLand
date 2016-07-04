@@ -1,6 +1,7 @@
 package com.voligov.movieland.util;
 
-import com.voligov.movieland.util.gson.MovieSearchParams;
+import com.voligov.movieland.util.entity.GetMoviesRequestParams;
+import com.voligov.movieland.util.entity.MovieSearchParams;
 
 public class QueryBuilder {
     private final int PAGE_SIZE = 5;

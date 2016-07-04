@@ -2,10 +2,10 @@ package com.voligov.movieland.controller;
 
 import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.util.GetMoviesRequestParams;
+import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.enums.SortingOrder;
 import com.voligov.movieland.util.enums.UserRole;
-import com.voligov.movieland.util.gson.MovieSearchParams;
+import com.voligov.movieland.util.entity.MovieSearchParams;
 import com.voligov.movieland.service.MovieService;
 import com.voligov.movieland.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;

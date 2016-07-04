@@ -1,7 +1,8 @@
 package com.voligov.movieland.util;
 
 import com.voligov.movieland.entity.*;
-import com.voligov.movieland.util.gson.MovieSearchParams;
+import com.voligov.movieland.util.entity.MovieSearchParams;
+import com.voligov.movieland.util.entity.UserCredentials;
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
