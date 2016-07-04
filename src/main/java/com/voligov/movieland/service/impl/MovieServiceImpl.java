@@ -161,7 +161,7 @@ public class MovieServiceImpl implements MovieService {
         }
     }
 
-    @Scheduled(cron = "0 1 1 * * ?")
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public synchronized void deleteMarkedMovies() {
         log.info("Deleting marked movies");
