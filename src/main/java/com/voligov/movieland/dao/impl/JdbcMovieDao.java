@@ -112,23 +112,6 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public byte[] getPoster(Integer movieId) {
-        //CREATE TABLE movie_poster(movie_id int, poster mediumblob);
-        /*String insertPoster = "INSERT INTO movie_poster(movie_id,poster) VALUES (1,?);";
-        final File image = new File("C:\\Users\\Sands\\Downloads\\shawshank.jpg");
-        final InputStream imageIs;
-        try {
-            imageIs = new FileInputStream(image);
-            LobHandler lobHandler = new DefaultLobHandler();
-            jdbcTemplate.update(
-                    insertPoster,
-                    new Object[]{
-                            new SqlLobValue(imageIs, (int) image.length(), lobHandler),
-                    },
-                    new int[]{Types.BLOB});
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;*/
         byte[] fileBytes = null;
         try {
             fileBytes = jdbcTemplate.queryForObject(getPosterSQL, posterRowMapper, movieId);
