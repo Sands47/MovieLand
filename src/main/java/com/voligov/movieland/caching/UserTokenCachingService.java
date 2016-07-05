@@ -46,9 +46,23 @@ public class UserTokenCachingService {
     public UserToken getByTokenString(String tokenValue) {
         try {
             readLock.lock();
-            for (UserToken userToken : tokenCache) {
+            for (Iterator<UserToken> iterator = tokenCache.iterator(); iterator.hasNext(); ) {
+                UserToken userToken = iterator.next();
                 if (userToken.getToken().equals(tokenValue)) {
                     log.info("Token for value = {} found in cache", tokenValue);
+                    Date currentDate = new Date();
+                    if (currentDate.after(userToken.getExpirationDate())) {
+                        try {
+                            readLock.unlock();
+                            writeLock.lock();
+                            iterator.remove();
+                            log.info("Token for value = {} expired, deleting from cache", tokenValue);
+                            break;
+                        } finally {
+                            writeLock.unlock();
+                            readLock.lock();
+                        }
+                    }
                     return copy(userToken);
                 }
             }
@@ -57,9 +71,10 @@ public class UserTokenCachingService {
         } finally {
             readLock.unlock();
         }
+
     }
 
-    @Scheduled(fixedRate = 60 * 1000)
+    @Scheduled(fixedRate = 2 * 60 * 60 * 1000)
     public void updateTokenCache() {
         try {
             writeLock.lock();
