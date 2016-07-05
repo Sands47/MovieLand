@@ -111,12 +111,12 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public byte[] getPoster(Integer movieId) {
+    public byte[] getPoster(int movieId) {
         byte[] fileBytes = null;
         try {
             fileBytes = jdbcTemplate.queryForObject(getPosterSQL, posterRowMapper, movieId);
         } catch (EmptyResultDataAccessException e) {
-            log.info("Poster for movie id = {} doesn't exist in database", movieId);
+            log.warn("Poster for movie id = {} doesn't exist in database", movieId);
         }
         return fileBytes;
     }

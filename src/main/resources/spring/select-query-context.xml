@@ -113,6 +113,12 @@
         WHERE movie_id = ?;"/>
     </bean>
 
+    <bean id="getRatingForUserSQL" class="java.lang.String">
+        <constructor-arg value="SELECT movie_id, user_id, rating
+        FROM rating
+        WHERE movie_id = ? AND user_id = ?;"/>
+    </bean>
+
     <bean id="avgRatingSQL" class="java.lang.String">
         <constructor-arg value="SELECT AVG(rating) from rating
         WHERE movie_id = ?;"/>

@@ -3,10 +3,7 @@ package com.voligov.movieland.service.impl;
 import com.voligov.movieland.caching.CountryCachingService;
 import com.voligov.movieland.caching.GenreCachingService;
 import com.voligov.movieland.dao.MovieDao;
-import com.voligov.movieland.entity.Country;
-import com.voligov.movieland.entity.Genre;
-import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.entity.Review;
+import com.voligov.movieland.entity.*;
 import com.voligov.movieland.service.*;
 import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
@@ -39,6 +36,9 @@ public class MovieServiceImpl implements MovieService {
     private CountryService countryService;
 
     @Autowired
+    private RatingService ratingService;
+
+    @Autowired
     private GenreCachingService genreCachingService;
 
     @Autowired
@@ -57,7 +57,9 @@ public class MovieServiceImpl implements MovieService {
         for (Movie movie : movies) {
             enrichGenres(movie);
             enrichCountries(movie);
-            currencyService.convertCurrency(movie, params.getCurrency());
+        }
+        if (params.getCurrency() != null) {
+            currencyService.convertCurrency(movies, params.getCurrency());
         }
         return movies;
     }
@@ -68,7 +70,9 @@ public class MovieServiceImpl implements MovieService {
         if (movie != null) {
             enrichGenres(movie);
             enrichCountries(movie);
-            currencyService.convertCurrency(movie, params.getCurrency());
+            if (params.getCurrency() != null) {
+                currencyService.convertCurrency(movie, params.getCurrency());
+            }
             List<Review> reviews = reviewService.getByMovieId(params.getMovieId());
             movie.setReviews(reviews);
             if (movie.getReviews().size() > 2) {
@@ -79,6 +83,15 @@ public class MovieServiceImpl implements MovieService {
                     movie.getReviews().remove(index);
                 }
                 movie.setReviews(randomReviews);
+            }
+            if (params.getUser() != null) {
+                Rating rating = ratingService.getRatingForMovie(movie, params.getUser());
+                if (rating != null) {
+                    rating.setUser(params.getUser());
+                    List<Rating> ratings = new ArrayList<>();
+                    ratings.add(rating);
+                    movie.setRatings(ratings);
+                }
             }
         }
         return movie;
@@ -137,7 +150,7 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public byte[] getPoster(Integer movieId) {
+    public byte[] getPoster(int movieId) {
         return movieDao.getPoster(movieId);
     }
 

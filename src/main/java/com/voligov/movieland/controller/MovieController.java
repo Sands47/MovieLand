@@ -35,12 +35,12 @@ public class MovieController {
     @ResponseBody
     public ResponseEntity<String> getAllMovies(@RequestParam(value = "rating", required = false) String ratingOrder,
                                                @RequestParam(value = "price", required = false) String priceOrder,
-                                               @RequestParam(value = "page", defaultValue = "1") String page,
+                                               @RequestParam(value = "page", defaultValue = "1") int page,
                                                @RequestParam(value = "currency", required = false) String currency) {
         GetMoviesRequestParams params = new GetMoviesRequestParams();
         params.setRatingOrder(SortingOrder.getBySortString(ratingOrder));
         params.setPriceOrder(SortingOrder.getBySortString(priceOrder));
-        params.setPage(Integer.valueOf(page));
+        params.setPage(page);
         params.setCurrency(currency);
         List<Movie> movies = movieService.getAll(params);
         String json = jsonConverter.toJson(movies);
@@ -111,7 +111,11 @@ public class MovieController {
 
     @ResponseBody
     @RequestMapping(value = "/poster/{movieId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getPoster(@PathVariable int movieId) {
-        return movieService.getPoster(movieId);
+    public ResponseEntity<byte[]> getPoster(@PathVariable int movieId) {
+        byte[] poster = movieService.getPoster(movieId);
+        if (poster == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(poster, HttpStatus.OK);
     }
 }

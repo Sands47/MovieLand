@@ -23,5 +23,5 @@ public interface MovieService {
 
     void unmarkForDeletion(int movieId);
 
-    byte[] getPoster(Integer movieId);
+    byte[] getPoster(int movieId);
 }
