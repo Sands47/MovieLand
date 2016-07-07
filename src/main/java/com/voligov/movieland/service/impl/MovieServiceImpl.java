@@ -3,16 +3,11 @@ package com.voligov.movieland.service.impl;
 import com.voligov.movieland.caching.CountryCachingService;
 import com.voligov.movieland.caching.GenreCachingService;
 import com.voligov.movieland.dao.MovieDao;
-import com.voligov.movieland.entity.Country;
-import com.voligov.movieland.entity.Genre;
-import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.service.CountryService;
-import com.voligov.movieland.service.GenreService;
+import com.voligov.movieland.entity.*;
+import com.voligov.movieland.service.*;
+import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
-import com.voligov.movieland.entity.Review;
-import com.voligov.movieland.service.MovieService;
-import com.voligov.movieland.service.ReviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +36,18 @@ public class MovieServiceImpl implements MovieService {
     private CountryService countryService;
 
     @Autowired
+    private RatingService ratingService;
+
+    @Autowired
     private GenreCachingService genreCachingService;
 
     @Autowired
     private CountryCachingService countryCachingService;
 
-    private static final Random random = new Random();
+    @Autowired
+    private CurrencyService currencyService;
+
+    private static final Random RANDOM = new Random();
 
     private List<Integer> markedMovies = new ArrayList<>();
 
@@ -57,25 +58,40 @@ public class MovieServiceImpl implements MovieService {
             enrichGenres(movie);
             enrichCountries(movie);
         }
+        if (params.getCurrency() != null) {
+            currencyService.convertCurrency(movies, params.getCurrency());
+        }
         return movies;
     }
 
     @Override
-    public Movie getById(int id) {
-        Movie movie = movieDao.getById(id);
+    public Movie getById(GetMovieByIdRequestParams params) {
+        Movie movie = movieDao.getById(params);
         if (movie != null) {
             enrichGenres(movie);
             enrichCountries(movie);
-            List<Review> reviews = reviewService.getByMovieId(id);
+            if (params.getCurrency() != null) {
+                currencyService.convertCurrency(movie, params.getCurrency());
+            }
+            List<Review> reviews = reviewService.getByMovieId(params.getMovieId());
             movie.setReviews(reviews);
             if (movie.getReviews().size() > 2) {
                 List<Review> randomReviews = new ArrayList<>();
                 for (int i = 0; i < 2; i++) {
-                    int index = random.nextInt(movie.getReviews().size());
+                    int index = RANDOM.nextInt(movie.getReviews().size());
                     randomReviews.add(movie.getReviews().get(index));
                     movie.getReviews().remove(index);
                 }
                 movie.setReviews(randomReviews);
+            }
+            if (params.getUser() != null) {
+                Rating rating = ratingService.getRatingForMovie(movie, params.getUser());
+                if (rating != null) {
+                    rating.setUser(params.getUser());
+                    List<Rating> ratings = new ArrayList<>();
+                    ratings.add(rating);
+                    movie.setRatings(ratings);
+                }
             }
         }
         return movie;
@@ -131,6 +147,11 @@ public class MovieServiceImpl implements MovieService {
     public synchronized void unmarkForDeletion(int movieId) {
         markedMovies.remove(movieId);
         log.info("Movie {} unmarked for deletion", movieId);
+    }
+
+    @Override
+    public byte[] getPoster(int movieId) {
+        return movieDao.getPoster(movieId);
     }
 
     private void enrichGenres(Movie movie) {

@@ -1,12 +1,13 @@
 package com.voligov.movieland.dao.impl;
 
 import com.voligov.movieland.dao.MovieDao;
+import com.voligov.movieland.dao.impl.mapper.MoviePosterRowMapper;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.util.Constant;
+import com.voligov.movieland.util.QueryBuilder;
+import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
-import com.voligov.movieland.util.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.voligov.movieland.util.Constant.MOVIE_IDS;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
@@ -47,9 +50,13 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String deleteMoviesSQL;
 
+    @Autowired
+    private String getPosterSQL;
+
     private final QueryBuilder queryBuilder = new QueryBuilder();
 
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
+    private final MoviePosterRowMapper posterRowMapper = new MoviePosterRowMapper();
 
     @Override
     public List<Movie> getAll(GetMoviesRequestParams params) {
@@ -58,12 +65,12 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public Movie getById(int id) {
+    public Movie getById(GetMovieByIdRequestParams params) {
         Movie movie;
         try {
-            movie = jdbcTemplate.queryForObject(getMovieByIdSQL, new Object[]{id}, movieRowMapper);
+            movie = jdbcTemplate.queryForObject(getMovieByIdSQL, movieRowMapper, params.getMovieId());
         } catch (EmptyResultDataAccessException e) {
-            log.warn("Movie with id = {} not found in database", id);
+            log.warn("Movie with id = {} not found in database", params.getMovieId());
             return null;
         }
         return movie;
@@ -99,7 +106,18 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public void deleteMovies(List<Integer> movies) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue(Constant.MOVIE_IDS, movies);
+        parameters.addValue(MOVIE_IDS, movies);
         namedParameterJdbcTemplate.update(deleteMoviesSQL, parameters);
+    }
+
+    @Override
+    public byte[] getPoster(int movieId) {
+        byte[] fileBytes = null;
+        try {
+            fileBytes = jdbcTemplate.queryForObject(getPosterSQL, posterRowMapper, movieId);
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("Poster for movie id = {} doesn't exist in database", movieId);
+        }
+        return fileBytes;
     }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="updateRatingSQL" class="java.lang.String">
+        <constructor-arg value="UPDATE rating
+        SET rating = ?
+        WHERE movie_id = ? AND user_id = ?;"/>
+    </bean>
+
+    <bean id="updateAvgRatingSQL" class="java.lang.String">
+        <constructor-arg value="UPDATE movie
+        SET rating = ?
+        WHERE id = ?;"/>
+    </bean>
+
+    <bean id="updateMovieSQL" class="java.lang.String">
+        <constructor-arg value="UPDATE movie
+        SET name = ?, name_original = ?, release_year = ?, description = ?, price = ?
+        WHERE id = ?;"/>
+    </bean>
+</beans>

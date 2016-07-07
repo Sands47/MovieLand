@@ -3,7 +3,6 @@ package com.voligov.movieland.controller.interceptor;
 import com.voligov.movieland.controller.annotation.RoleRequired;
 import com.voligov.movieland.util.entity.UserToken;
 import com.voligov.movieland.service.SecurityService;
-import com.voligov.movieland.util.Constant;
 import com.voligov.movieland.util.enums.UserRole;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,47 +15,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+import static com.voligov.movieland.util.Constant.*;
+
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     private SecurityService securityService;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
-        MDC.put(Constant.REQUEST_ID, UUID.randomUUID().toString());
-        String user = Constant.GUEST;
+        MDC.put(REQUEST_ID, UUID.randomUUID().toString());
+        String user = GUEST;
         String token = null;
         Cookie[] cookies = httpServletRequest.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(Constant.TOKEN)) {
+                if (cookie.getName().equals(TOKEN)) {
                     token = cookie.getValue();
                     break;
                 }
             }
         }
         if (token == null) {
-            token = httpServletRequest.getHeader(Constant.TOKEN);
+            token = httpServletRequest.getHeader(TOKEN);
         }
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             RoleRequired roleRequiredAnnotation = handlerMethod.getMethodAnnotation(RoleRequired.class);
-            UserRole roleRequired;
-            if (roleRequiredAnnotation != null) {
-                roleRequired = roleRequiredAnnotation.role();
-            } else {
-                roleRequired = UserRole.GUEST;
-            }
+            UserRole roleRequired = (roleRequiredAnnotation != null) ? roleRequiredAnnotation.role() : UserRole.GUEST;
             UserToken userToken = securityService.validateToken(token, roleRequired);
             if (userToken != null) {
                 user = userToken.getUser().getEmail();
-                if (!userToken.getUser().getRole().equalOrHigher(roleRequired)) {
-                    throw new SecurityException("Role required: " + roleRequired);
+                if (userToken.getUser().getRole().equalOrHigher(roleRequired)) {
+                    httpServletRequest.setAttribute(AUTHORIZED_USER, userToken.getUser());
                 } else {
-                    httpServletRequest.setAttribute(Constant.AUTHORIZED_USER, userToken.getUser());
+                    throw new SecurityException("Role required: " + roleRequired);
                 }
             }
         }
-        MDC.put(Constant.USER, user);
+        MDC.put(USER, user);
         return true;
     }
 

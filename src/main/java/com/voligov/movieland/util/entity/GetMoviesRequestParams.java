@@ -6,7 +6,8 @@ import com.voligov.movieland.util.enums.SortingOrder;
 public class GetMoviesRequestParams {
     private SortingOrder ratingOrder;
     private SortingOrder priceOrder;
-    Integer page;
+    private Integer page;
+    private String currency;
 
     public SortingOrder getRatingOrder() {
         return ratingOrder;
@@ -30,5 +31,13 @@ public class GetMoviesRequestParams {
 
     public void setPage(Integer page) {
         this.page = page;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

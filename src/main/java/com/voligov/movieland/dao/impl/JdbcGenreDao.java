@@ -4,9 +4,6 @@ import com.voligov.movieland.dao.GenreDao;
 import com.voligov.movieland.dao.impl.mapper.GenreRowMapper;
 import com.voligov.movieland.entity.Genre;
 import com.voligov.movieland.entity.Movie;
-import com.voligov.movieland.util.Constant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,9 +11,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static com.voligov.movieland.util.Constant.MOVIE_IDS;
 
 @Repository
 public class JdbcGenreDao implements GenreDao {
@@ -87,7 +84,7 @@ public class JdbcGenreDao implements GenreDao {
     @Override
     public void deleteGenresForMovies(List<Integer> movies) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue(Constant.MOVIE_IDS, movies);
+        parameters.addValue(MOVIE_IDS, movies);
         namedParameterJdbcTemplate.update(deleteGenresForMoviesSQL, parameters);
     }
 }

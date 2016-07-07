@@ -4,9 +4,11 @@ import com.voligov.movieland.dao.RatingDao;
 import com.voligov.movieland.dao.impl.mapper.RatingRowMapper;
 import com.voligov.movieland.entity.Movie;
 import com.voligov.movieland.entity.Rating;
+import com.voligov.movieland.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +26,9 @@ public class JdbcRatingDao implements RatingDao {
 
     @Autowired
     private String getRatingSQL;
+
+    @Autowired
+    private String getRatingForUserSQL;
 
     @Autowired
     private String updateRatingSQL;
@@ -48,6 +53,17 @@ public class JdbcRatingDao implements RatingDao {
     @Override
     public List<Rating> get(Movie movie) {
         return jdbcTemplate.query(getRatingSQL, ratingRowMapper, movie.getId());
+    }
+
+    @Override
+    public Rating get(Movie movie, User user) {
+        Rating rating = null;
+        try {
+            rating = jdbcTemplate.queryForObject(getRatingForUserSQL, ratingRowMapper, movie.getId(), user.getId());
+        } catch (EmptyResultDataAccessException e) {
+            log.info("User {} has not rated movie {}", user.getId(), movie.getId());
+        }
+        return rating;
     }
 
     @Override

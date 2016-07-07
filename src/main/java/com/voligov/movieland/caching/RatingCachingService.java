@@ -40,7 +40,7 @@ public class RatingCachingService {
                     writeLock.lock();
                     ratingList = ratings.get(rating.getMovie().getId());
                     if (ratingList == null) {
-                        ratingList = ratingService.getRatingsForMovie(rating.getMovie());
+                        ratingList = ratingService.getRatingForMovie(rating.getMovie());
                         ratings.put(rating.getMovie().getId(), ratingList);
                     }
                 } finally {
