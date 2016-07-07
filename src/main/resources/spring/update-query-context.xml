@@ -18,7 +18,7 @@
 
     <bean id="updateMovieSQL" class="java.lang.String">
         <constructor-arg value="UPDATE movie
-        SET name = ?, name_original = ?, release_year = ?, description = ?, price = ?
+        SET name = ?, name_original = ?, release_year = ?, description = ?, price = ?, updated_ts = NOW()
         WHERE id = ?;"/>
     </bean>
 </beans>

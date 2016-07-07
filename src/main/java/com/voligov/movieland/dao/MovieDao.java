@@ -1,6 +1,7 @@
 package com.voligov.movieland.dao;
 
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.dto.MovieReportDto;
 import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
 import com.voligov.movieland.util.entity.MovieSearchParams;
@@ -11,6 +12,8 @@ public interface MovieDao {
     List<Movie> getAll(GetMoviesRequestParams params);
 
     Movie getById(GetMovieByIdRequestParams params);
+
+    List<MovieReportDto> getMoviesForReport();
 
     List<Movie> search(MovieSearchParams searchParams);
 

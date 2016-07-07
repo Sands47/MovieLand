@@ -21,6 +21,9 @@ public class Constant {
     public static final String NAME_ORIGINAL = "name_original";
     public static final String RELEASE_YEAR = "release_year";
     public static final String DESCRIPTION = "description";
+    public static final String ADDED_TIMESTAMP = "added_ts";
+    public static final String UPDATED_TIMESTAMP = "updated_ts";
+    public static final String REVIEW_COUNT = "review_count";
     public static final String TEXT = "text";
     public static final String FIRST_NAME = "first_name";
     public static final String LAST_NAME = "last_name";

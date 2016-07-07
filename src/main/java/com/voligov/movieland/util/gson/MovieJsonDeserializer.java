@@ -28,7 +28,7 @@ public class MovieJsonDeserializer implements JsonDeserializer<Movie> {
         if (nameOriginal != null) {
             movie.setNameOriginal(nameOriginal.getAsString());
         }
-        JsonElement releaseYear = jsonObject.get(NAME_ORIGINAL);
+        JsonElement releaseYear = jsonObject.get(RELEASE_YEAR);
         if (releaseYear != null) {
             movie.setReleaseYear(releaseYear.getAsInt());
         }

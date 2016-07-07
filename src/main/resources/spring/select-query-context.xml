@@ -31,6 +31,20 @@
         GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price;"/>
     </bean>
 
+    <bean id="getMoviesForReportSQL" class="java.lang.String">
+        <constructor-arg value="SELECT t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating, t1.price,
+        t1.added_ts,t1.updated_ts,
+        GROUP_CONCAT(DISTINCT t2.genre_id ORDER BY t2.genre_id DESC SEPARATOR ',') genres,
+        COUNT(t3.id) review_count
+        FROM movie t1
+        LEFT JOIN movie_genre t2
+        ON t1.id = t2.movie_id
+        LEFT JOIN review t3
+        ON t1.id = t3.movie_id
+        GROUP BY t1.id, t1.name, t1.name_original, t1.release_year, t1.description, t1.rating,
+        t1.price, t1.added_ts,t1.updated_ts;"/>
+    </bean>
+
     <bean id="getPosterSQL" class="java.lang.String">
         <constructor-arg value="SELECT poster FROM movie_poster WHERE movie_id=?;"/>
     </bean>

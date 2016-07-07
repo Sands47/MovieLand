@@ -2,8 +2,10 @@ package com.voligov.movieland.dao.impl;
 
 import com.voligov.movieland.dao.MovieDao;
 import com.voligov.movieland.dao.impl.mapper.MoviePosterRowMapper;
+import com.voligov.movieland.dao.impl.mapper.MovieReportRowMapper;
 import com.voligov.movieland.dao.impl.mapper.MovieRowMapper;
 import com.voligov.movieland.entity.Movie;
+import com.voligov.movieland.entity.dto.MovieReportDto;
 import com.voligov.movieland.util.QueryBuilder;
 import com.voligov.movieland.util.entity.GetMovieByIdRequestParams;
 import com.voligov.movieland.util.entity.GetMoviesRequestParams;
@@ -53,10 +55,14 @@ public class JdbcMovieDao implements MovieDao {
     @Autowired
     private String getPosterSQL;
 
+    @Autowired
+    private String getMoviesForReportSQL;
+
     private final QueryBuilder queryBuilder = new QueryBuilder();
 
     private final MovieRowMapper movieRowMapper = new MovieRowMapper();
     private final MoviePosterRowMapper posterRowMapper = new MoviePosterRowMapper();
+    private final MovieReportRowMapper movieReportRowMapper = new MovieReportRowMapper();
 
     @Override
     public List<Movie> getAll(GetMoviesRequestParams params) {
@@ -74,6 +80,11 @@ public class JdbcMovieDao implements MovieDao {
             return null;
         }
         return movie;
+    }
+
+    @Override
+    public List<MovieReportDto> getMoviesForReport() {
+        return jdbcTemplate.query(getMoviesForReportSQL, movieReportRowMapper);
     }
 
     @Override
