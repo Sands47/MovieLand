@@ -7,6 +7,7 @@ import com.voligov.movieland.util.enums.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,16 +21,20 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private JsonConverter jsonConverter;
+
     @RoleRequired(role = UserRole.ADMIN)
     @RequestMapping(method = RequestMethod.POST, produces = "application/json; charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> requestReport() {
         String reportId = reportService.requestAllMoviesReport();
-        return new ResponseEntity<>(reportId, HttpStatus.OK);
+        return new ResponseEntity<>(jsonConverter.wrapResponse(reportId), HttpStatus.OK);
     }
 
     @RoleRequired(role = UserRole.ADMIN)
-    @RequestMapping(value = "/{reportId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{reportId}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<FileSystemResource> getReport(@PathVariable("reportId") String reportId) {
         String filePath = reportService.getReport(reportId);

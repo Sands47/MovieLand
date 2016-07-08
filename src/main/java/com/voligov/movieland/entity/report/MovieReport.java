@@ -64,6 +64,7 @@ public class MovieReport implements Callable<String> {
         String filePath = "C:\\test_excel.xlsx";
         try (FileOutputStream out = new FileOutputStream(new File(filePath))) {
             workbook.write(out);
+            log.info("Finished generating report, file {} created in file system", filePath);
         } catch (IOException e) {
             log.warn(e.toString());
         }
