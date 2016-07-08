@@ -1,9 +1,11 @@
 package com.voligov.movieland.service;
 
 public interface ReportService {
-    void requestAllMoviesReport();
+    String requestAllMoviesReport();
 
-    void requestMoviesByPeriodReport();
+    String requestMoviesByPeriodReport();
 
-    void requestUsersReport();
+    String requestUsersReport();
+
+    String getReport(String reportId);
 }

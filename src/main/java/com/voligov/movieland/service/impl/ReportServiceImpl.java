@@ -1,68 +1,72 @@
 package com.voligov.movieland.service.impl;
 
 import com.voligov.movieland.dao.MovieDao;
-import com.voligov.movieland.entity.dto.MovieReportDto;
+import com.voligov.movieland.entity.report.MovieReport;
 import com.voligov.movieland.service.ReportService;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 public class ReportServiceImpl implements ReportService {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private MovieDao movieDao;
 
+    private List<MovieReport> reportRequests = new CopyOnWriteArrayList<>();
+    private Map<String, Future<String>> futures = new ConcurrentHashMap<>();
+
+    @Autowired
+    private AsyncTaskExecutor taskExecutor;
+
     @Override
-    public void requestAllMoviesReport() {
-        List<MovieReportDto> movies = movieDao.getMoviesForReport();
-        SXSSFWorkbook workbook = new SXSSFWorkbook();
-        SXSSFSheet sheet = workbook.createSheet("All movies report");
-        int rownum = 0;
-        for (MovieReportDto movie : movies) {
-            Row row = sheet.createRow(rownum++);
-            Cell cell = row.createCell(0);
-            cell.setCellValue(movie.getId());
-            cell = row.createCell(1);
-            cell.setCellValue(movie.getName());
-            cell = row.createCell(2);
-            cell.setCellValue(movie.getNameOriginal());
-            cell = row.createCell(3);
-            cell.setCellValue(movie.getDescription());
-            cell = row.createCell(4);
-            cell.setCellValue(movie.getGenres());
-            cell = row.createCell(5);
-            cell.setCellValue(movie.getPrice());
-            cell = row.createCell(6);
-            cell.setCellValue(movie.getAddedTimestamp().toString());
-            cell = row.createCell(7);
-            cell.setCellValue(movie.getUpdatedTimestamp().toString());
-            cell = row.createCell(8);
-            cell.setCellValue(movie.getRating());
-            cell = row.createCell(9);
-            cell.setCellValue(movie.getReviewCount());
-        }
-        try (FileOutputStream out = new FileOutputStream(new File("C:\\test_excel.xlsx"))) {
-            workbook.write(out);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public String requestAllMoviesReport() {
+        MovieReport movieReport = new MovieReport(movieDao);
+        String reportId = movieReport.getId();
+        reportRequests.add(movieReport);
+        return reportId;
     }
 
     @Override
-    public void requestMoviesByPeriodReport() {
-
+    public String requestMoviesByPeriodReport() {
+        return null;
     }
 
     @Override
-    public void requestUsersReport() {
+    public String requestUsersReport() {
+        return null;
+    }
 
+    @Override
+    public String getReport(String reportId) {
+        Future<String> result = futures.get(reportId);
+        if (result.isDone()) {
+            try {
+                return result.get();
+            } catch (InterruptedException | ExecutionException e) {
+                log.warn(e.toString());
+            }
+        }
+        return null;
+    }
+
+    @Scheduled(fixedRate = 60 * 1000)
+    public synchronized void startReportGeneration() {
+        for (MovieReport report : reportRequests) {
+            Future<String> future = taskExecutor.submit(report);
+            futures.put(report.getId(), future);
+        }
+        reportRequests.clear();
     }
 }

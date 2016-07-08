@@ -16,7 +16,7 @@
     <aop:aspectj-autoproxy/>
 
     <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
-    <task:executor id="taskExecutor" pool-size="5"/>
+    <task:executor id="taskExecutor" pool-size="10"/>
     <task:scheduler id="taskScheduler" pool-size="5"/>
 
     <tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
